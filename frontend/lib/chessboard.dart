@@ -8,19 +8,24 @@ class ChessboardWidget extends StatefulWidget {
 }
 
 class ChessboardState extends State<ChessboardWidget> {
-  ChessBoardController controller = ChessBoardController.fromFEN(
-      'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1');
+  var inputFen = 'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1';
+  ChessBoardController? controller;
 
   @override
   Widget build(BuildContext context) {
+    // Initialize the ChessBoardController inside the build method
+    controller ??= ChessBoardController.fromFEN(inputFen);
+
     return Flexible(
-        child: FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: .5,
-            child: ChessBoard(
-              controller: controller,
-              boardColor: BoardColor.orange,
-              boardOrientation: PlayerColor.white,
-            )));
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        heightFactor: .5,
+        child: ChessBoard(
+          controller: controller!,
+          boardColor: BoardColor.orange,
+          boardOrientation: PlayerColor.white,
+        ),
+      ),
+    );
   }
 }
