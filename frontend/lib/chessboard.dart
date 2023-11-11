@@ -8,7 +8,8 @@ class ChessboardWidget extends StatefulWidget {
 }
 
 class ChessboardState extends State<ChessboardWidget> {
-  ChessBoardController controller = ChessBoardController();
+  ChessBoardController controller = ChessBoardController.fromFEN(
+      'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1');
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +21,6 @@ class ChessboardState extends State<ChessboardWidget> {
               controller: controller,
               boardColor: BoardColor.orange,
               boardOrientation: PlayerColor.white,
-              arrows: [
-                BoardArrow(
-                  from: 'd2',
-                  to: 'd4',
-                  color: Colors.red.withOpacity(0.5),
-                ),
-              ],
             )));
   }
 }
