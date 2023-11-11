@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/chessboard.dart';
 import 'camera.dart';
-import 'package:camera/camera.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
         ),
         home: const Stack(children: [
           CameraWidget(),
+          ChessboardWidget(),
           MyHomePage(title: 'Flutter Demo Home Page')
         ]));
   }
@@ -92,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(children: [
         CameraWidget(),
+        //ChessboardWidget(),
         Center(
           // Center is a layout widget. It takes a single child and positions it
           // in the middle of the parent.
