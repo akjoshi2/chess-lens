@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
         home: const Stack(children: [
           CameraWidget(),
           ChessboardWidget(),
-          ChessbarWidget(),
+          ChessbarWidget(
+            flipped: false,
+          ),
           MyHomePage(title: 'Flutter Demo Home Page')
         ]));
   }
@@ -73,7 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return const Scaffold(
       body: Row(children: [
         ChessboardWidget(),
-        ChessbarWidget(),
+        ChessbarWidget(
+          flipped: false,
+        ),
       ]),
     );
   }
