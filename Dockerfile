@@ -7,8 +7,6 @@ RUN apt-get update && \
   wget \
   python3-pip \
 
-COPY . .
-
 RUN pip install -r backend/requirements.txt
 ENV FLASK_APP=api.py
 EXPOSE 8080
