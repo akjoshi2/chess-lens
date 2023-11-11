@@ -12,18 +12,21 @@ class ChessboardState extends State<ChessboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: ChessBoard(
-      controller: controller,
-      boardColor: BoardColor.orange,
-      boardOrientation: PlayerColor.white,
-      arrows: [
-        BoardArrow(
-          from: 'd2',
-          to: 'd4',
-          color: Colors.red.withOpacity(0.5),
-        ),
-      ],
-    ));
+    return Flexible(
+        child: FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: .5,
+            child: ChessBoard(
+              controller: controller,
+              boardColor: BoardColor.orange,
+              boardOrientation: PlayerColor.white,
+              arrows: [
+                BoardArrow(
+                  from: 'd2',
+                  to: 'd4',
+                  color: Colors.red.withOpacity(0.5),
+                ),
+              ],
+            )));
   }
 }
