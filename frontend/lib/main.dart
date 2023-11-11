@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/chessboard.dart';
+import 'package:frontend/chessbar.dart';
 import 'camera.dart';
 
 void main() async {
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         home: const Stack(children: [
           CameraWidget(),
           ChessboardWidget(),
+          ChessbarWidget(),
           MyHomePage(title: 'Flutter Demo Home Page')
         ]));
   }
@@ -83,8 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return const Scaffold(
       body: Column(children: [
-        CameraWidget(),
         ChessboardWidget(),
+        ChessbarWidget(),
       ]),
     );
   }

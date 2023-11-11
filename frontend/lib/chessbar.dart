@@ -9,9 +9,16 @@ class ChessbarWidget extends StatefulWidget {
 class ChessbarState extends State<ChessbarWidget> {
   @override
   Widget build(BuildContext context) {
-    return const Flexible(
+    return Flexible(
       child: FractionallySizedBox(
-          widthFactor: 1, heightFactor: .5, child: Text("Chessbar")),
+          widthFactor: 1,
+          heightFactor: .5,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              shape: BoxShape.rectangle,
+            ),
+          )),
     );
   }
 }
