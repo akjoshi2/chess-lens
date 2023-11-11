@@ -7,10 +7,10 @@ RUN apt-get update && \
   wget \
   python3-pip \
 
-COPY . .
+# COPY . .
 
-RUN pip install -r backend/requirements.txt
-ENV FLASK_APP=api.py
-EXPOSE 8080
-WORKDIR /backend
-CMD ["gunicorn" , "-b", "0.0.0.0:8080",   "api:app"]
+# RUN pip install -r backend/requirements.txt
+# ENV FLASK_APP=/backend/api.py
+# EXPOSE 8080
+# WORKDIR /backend
+# CMD ["gunicorn" , "-b", "0.0.0.0:8080",   "api:app"]
