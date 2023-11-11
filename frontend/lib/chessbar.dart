@@ -21,20 +21,27 @@ class ChessbarState extends State<ChessbarWidget> {
 
     return Flexible(
       child: FractionallySizedBox(
-          widthFactor: .1,
-          heightFactor: .5,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: grad,
-                stops: stops,
-                end: Alignment.bottomCenter,
-                begin: Alignment.topCenter,
-              ),
-              shape: BoxShape.rectangle,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
+        widthFactor: .1,
+        heightFactor: .5,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: grad,
+              stops: stops,
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter,
             ),
-          )),
+            shape: BoxShape.rectangle,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+          ),
+          child: const Column(children: [
+            Text("0.0",
+                style: TextStyle(
+                  color: Colors.black,
+                ))
+          ]),
+        ),
+      ),
     );
   }
 }
