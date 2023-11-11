@@ -9,12 +9,7 @@ class ChessbarWidget extends StatefulWidget {
 class ChessbarState extends State<ChessbarWidget> {
   @override
   Widget build(BuildContext context) {
-    final List<Color> grad = [
-      Colors.white,
-      Colors.white,
-      Colors.black,
-      Colors.black
-    ];
+    List<Color> grad = [Colors.black, Colors.black, Colors.white, Colors.white];
     double whiteAdv = 0.0;
     String whiteAdvString = whiteAdv.toString();
     double whitePercent = 50.00;
@@ -39,7 +34,7 @@ class ChessbarState extends State<ChessbarWidget> {
           child: Column(children: [
             Text(whiteAdvString,
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                 ))
           ]),
         ),
