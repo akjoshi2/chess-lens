@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
+import 'package:frontend/lines.dart';
 import 'package:frontend/chessbar.dart';
+import 'package:frontend/lines.dart';
 import 'package:frontend/moves.dart';
 import 'camera.dart';
 import 'package:flutter/services.dart';
@@ -102,9 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaQuery.of(context).orientation == Orientation.portrait
-                    ? SizedBox(height: 10)
-                    : SizedBox(),
+                SizedBox(height: 10),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +112,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? SizedBox()
                           : SizedBox(width: 10),
-                      SizedBox(
+                      Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
                           width: MediaQuery.of(context).orientation ==
                                   Orientation.portrait
                               ? MediaQuery.of(context).size.width * .7
@@ -120,13 +130,33 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: 288,
                           child: ChessboardWidget(flipped: !_controller.value)),
                       SizedBox(width: 10),
-                      SizedBox(
+                      Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
                           width: 25,
                           height: 288,
                           child: ChessbarWidget(flipped: !_controller.value)),
                       SizedBox(width: 10),
                       Column(children: [
-                        SizedBox(
+                        Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
                             width: 78,
                             height: 35,
                             child: AdvancedSwitch(
@@ -142,9 +172,41 @@ class _MyHomePageState extends State<MyHomePage> {
                               inactiveChild: const Text('BLACK',
                                   style: TextStyle(color: Colors.white)),
                             )),
-                        MovesWidget()
+                        SizedBox(height: 10),
+                        Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: MovesWidget())
                       ])
-                    ])
+                    ]),
+                SizedBox(height: 10),
+                Row(children: [
+                  MediaQuery.of(context).orientation == Orientation.portrait
+                      ? SizedBox()
+                      : SizedBox(width: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child:
+                        LinesWidget(), // Replace YourWidget with your desired widget
+                  )
+                ])
               ])
         ]));
   }
