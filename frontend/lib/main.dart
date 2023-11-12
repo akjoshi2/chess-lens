@@ -23,21 +23,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // TRY THIS: Try running your application with "flutter run". You'll see
-          // the application has a blue toolbar. Then, without quitting the app,
-          // try changing the seedColor in the colorScheme below to Colors.green
-          // and then invoke "hot reload" (save your changes or press the "hot
-          // reload" button in a Flutter-supported IDE, or press "r" if you used
-          // the command line to start the app).
-          //
-          // Notice that the counter didn't reset back to zero; the application
-          // state is not lost during the reload. To reset the state, use hot
-          // restart instead.
-          //
-          // This works for code too, not just values: Most code changes can be
-          // tested with just a hot reload.
           colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.white,
               background: Color.fromRGBO(211, 211, 211, 1.0)),
@@ -49,16 +34,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -77,6 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
   }
+
+  Map<String, dynamic> jsonOutput = {
+    "fen": 'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1'
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +77,8 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
           CameraWidget(
               key: const ObjectKey(1),
-              orientation: MediaQuery.of(context).orientation),
+              orientation: MediaQuery.of(context).orientation,
+              callback: (val) => setState(() => jsonOutput = val)),
           Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,8 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: 288,
                           child: ChessboardWidget(
                               flipped: !_controller.value,
-                              fen:
-                                  'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1')),
+                              fen: jsonOutput["fen"])),
                       const SizedBox(width: 10),
                       Container(
                           decoration: BoxDecoration(

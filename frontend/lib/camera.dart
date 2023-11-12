@@ -5,12 +5,16 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+typedef MapCallback = void Function(Map<String, dynamic> val);
+
 @override
 class CameraWidget extends StatefulWidget {
   final Orientation? orientation;
+  final MapCallback callback;
   @override
   State<StatefulWidget> createState() => CameraWidgetState();
-  const CameraWidget({required Key key, required this.orientation});
+  const CameraWidget(
+      {required Key key, required this.orientation, required this.callback});
 }
 
 class CameraWidgetState extends State<CameraWidget> {
@@ -50,13 +54,14 @@ class CameraWidgetState extends State<CameraWidget> {
           final queryParams = {
             "width": image.width.toString(),
             "height": image.height.toString(),
-            "frames": image.planes.length.toString(),
-            "image": b64
+            "image": b64,
+            "whiteToMove": 0,
           };
 
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
-          await http.post(uri, body: queryParams);
+          var response = await http.post(uri, body: queryParams);
+          widget.callback(jsonDecode(response.body));
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
         }
