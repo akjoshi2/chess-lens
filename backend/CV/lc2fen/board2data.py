@@ -124,26 +124,12 @@ def process_input_boards(data_path: str):
     )
 
     print("INPUT: %d boards" % len(input_boards), flush=True)
-    fen_file = glob.glob(data_path + "/boards/input/*.fen")
-    if len(fen_file) != 1:
-        raise ValueError("Exactly one FEN file must be in the input folder")
-    with open(fen_file[0], "r") as fen_fd:
-        for input_board in tqdm(input_boards):
-            output_board = input_board.replace("/input/", "/output/")
-            input_image = cv2.imread(input_board)
-            image_object = detect_board.detect(input_image, output_board)
-            _, square_corners = detect_board.compute_corners(image_object)
-            line = fen_fd.readline()[:-1].split()
-            if len(line) != 2:
-                raise ValueError(
-                    "All lines in the FEN file must have the format "
-                    "'fen orientation'"
-                )
-            board_labels = rotate_board_from_standard_view(
-                            fen_to_board(line[0]), line[1]
-                        )
-
-            name = os.path.splitext(os.path.basename(input_board))[0]
-            split_board_image_advanced(
-                input_image, square_corners, name, data_path + "/pieces", board_labels)
+    for input_board in tqdm(input_boards):
+        output_board = input_board.replace("/input/", "/output/")
+        input_image = cv2.imread(input_board)
+        image_object = detect_board.detect(input_image, output_board)
+        _, square_corners = detect_board.compute_corners(image_object)
+        name = os.path.splitext(os.path.basename(input_board))[0]
+        split_board_image_advanced(
+            input_image, square_corners, name, data_path + "/pieces")
             

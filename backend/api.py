@@ -76,7 +76,6 @@ def getEval(fen):
     lines = {}
     for i, line in enumerate(pv_lines, start=1):
         lines[i] = line
-        print(lines)
         lines[i]["Move"] = uci_to_algebraic(fen, lines[i]["Move"])
 
     adjustedEval = lines[1]["Centipawn"]
