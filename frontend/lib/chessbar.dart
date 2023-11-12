@@ -21,8 +21,8 @@ class ChessbarState extends State<ChessbarWidget> {
 
     return Flexible(
       child: FractionallySizedBox(
-        widthFactor: .05,
-        heightFactor: .5,
+        widthFactor: 1,
+        heightFactor: 1,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
