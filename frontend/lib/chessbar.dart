@@ -13,13 +13,47 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double topAdv = 0.0;
+    double topAdv = 0.00;
     String topAdvString = "+${topAdv.toString()}";
     double botAdv = -1 * topAdv;
     String botAdvString = "+${botAdv.toString()}";
     double whitePercent = 50.00;
+    if (topAdv < -3) {
+      whitePercent = 1.00;
+    } else if (topAdv < -2) {
+      whitePercent = 11.00;
+    } else if (topAdv < -1) {
+      whitePercent = 22.00;
+    } else if (topAdv < -0.5) {
+      whitePercent = 33.00;
+    } else if (topAdv < -0.25) {
+      whitePercent = 44.00;
+    } else if (topAdv < 0.25) {
+      whitePercent = 50.00;
+    } else if (topAdv < 0.50) {
+      whitePercent = 56.00;
+    } else if (topAdv < 1) {
+      whitePercent = 67.00;
+    } else if (topAdv < 2) {
+      whitePercent = 78.00;
+    } else if (topAdv < 3) {
+      whitePercent = 89.00;
+    } else {
+      whitePercent = 99.00;
+    }
+    if (!widget.flipped) {
+      double temp = topAdv;
+      String tempString = topAdvString;
+      topAdv = botAdv;
+      topAdvString = botAdvString;
+      botAdv = temp;
+      botAdvString = tempString;
+    }
     double whiteStop = (100 - whitePercent) / 100;
-    final List<double> stops = [0.0, whiteStop, whiteStop, 1.0];
+    double blackStop = whitePercent / 100;
+    final List<double> stops = widget.flipped
+        ? [0.0, blackStop, blackStop, 1.0]
+        : [0.0, whiteStop, whiteStop, 1.0];
 
     return Flexible(
       child: FractionallySizedBox(
@@ -37,7 +71,7 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
-            if (topAdv >= botAdv)
+            if (topAdv > botAdv)
               Text(
                 topAdvString,
                 style: TextStyle(
@@ -45,8 +79,8 @@ class ChessbarState extends State<ChessbarWidget> {
                   color: widget.flipped ? Colors.black : Colors.white,
                 ),
               ),
-            SizedBox(height: 265),
-            if (botAdv > topAdv)
+            SizedBox(height: 274),
+            if (botAdv >= topAdv)
               Text(
                 botAdvString,
                 style: TextStyle(
