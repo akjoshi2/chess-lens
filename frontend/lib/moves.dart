@@ -52,7 +52,7 @@ class MovesState extends State<MovesWidget> {
               itemCount: moves.length,
               itemBuilder: (context, index) {
                 return Text(
-                  "${index + 1}. ${moves[index]}",
+                  "${(index / 2 + 1).floor()}. ${moves[index]}",
                   style: TextStyle(
                     fontSize: 12,
                   ),
