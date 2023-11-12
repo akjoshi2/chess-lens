@@ -27,20 +27,41 @@ class MovesState extends State<MovesWidget> {
     "Nbd2",
     "d6"
   ];
+
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Container(
-                height: 244,
-                padding: const EdgeInsets.all(10.0),
-                width: 78,
-                decoration: BoxDecoration(color: Colors.white),
-                child: ListView.builder(
-                    itemCount: moves.length,
-                    itemBuilder: (content, index) {
-                      return Text("${index + 1}. ${moves[index]}");
-                    }))));
+    return Container(
+      height: 244,
+      width: 78,
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(color: Colors.white),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Moves",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: moves.length,
+              itemBuilder: (context, index) {
+                return Text(
+                  "${index + 1}. ${moves[index]}",
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
