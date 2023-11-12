@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class ChessbarWidget extends StatefulWidget {
   final bool flipped;
-  const ChessbarWidget({Key? key, required this.flipped}) : super(key: key);
+  final double eval;
+  const ChessbarWidget({Key? key, required this.flipped, required this.eval}) : super(key: key);
   @override
   ChessbarState createState() => ChessbarState();
 }
@@ -13,13 +14,13 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double topAdv = 0.0;
+    double topAdv = widget.eval;
     String topAdvString = "+${topAdv.toString()}";
     double botAdv = topAdv;
     if (topAdv != 0) {
       botAdv = -1 * topAdv;
     }
-    String botAdvString = "+${botAdv.toString()}";
+    String botAdvString = "-${botAdv.toString()}";
     double whitePercent = 50.00;
     if (topAdv < -3) {
       whitePercent = 1.00;
