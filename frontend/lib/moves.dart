@@ -7,25 +7,28 @@ class MovesWidget extends StatefulWidget {
 }
 
 class MovesState extends State<MovesWidget> {
-  List<String> moves = [
+  List<String> whiteMoves = [
     "e4",
-    "e5",
     "Nf3",
-    "Nc6",
     "Bb5",
-    "Nf6",
     "d3",
-    "Bc5",
     "Ba4",
     "O-O",
-    "O-O",
     "Re8",
-    "c3",
     "Bf8",
-    "Re1",
-    "h6",
     "Nbd2",
-    "d6"
+  ];
+
+  List<String> blackMoves = [
+    "e5",
+    "Nc6",
+    "Nf6",
+    "Bc5",
+    "O-O",
+    "c3",
+    "h6",
+    "d6",
+    "Re1",
   ];
 
   @override
@@ -40,7 +43,7 @@ class MovesState extends State<MovesWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Moves",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -49,12 +52,12 @@ class MovesState extends State<MovesWidget> {
             ),
             ListView.builder(
               shrinkWrap: true,
-              itemCount: moves.length,
+              itemCount: whiteMoves.length,
               itemBuilder: (context, index) {
                 return Text(
-                  "${(index / 2 + 1).floor()}. ${moves[index]}",
+                  "${index + 1}. ${whiteMoves[index]}  ${blackMoves[index]}",
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 9,
                   ),
                 );
               },
