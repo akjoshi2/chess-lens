@@ -13,6 +13,7 @@ class LinesState extends State<LinesWidget> {
   @override
   Widget build(BuildContext context) {
     List<String> lines = widget.lines;
+    List<String> lineEvals = widget.lineEvals;
     return Expanded(
         child: Container(
             height: 95,
