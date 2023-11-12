@@ -876,7 +876,7 @@ def _check_balance_among_pawns_queens_and_bishops(
 def infer_chess_pieces(
     probs_with_no_indices: list[list[float]],
     a1_pos: str,
-    previous_fen: (str | None) = None,
+    previous_fen = None,
 ) -> list[str]:
     """Infer the exact piece positions on the chessboard.
 
@@ -1257,7 +1257,7 @@ def _detect_move(
     previous_fen: str,
     probs_with_no_indices: list[list],
     changed_squares: list[int],
-) -> (tuple[int, int, str]) | None:
+) -> (tuple[int, int, str]):
     """Detect the move made.
 
     This function detects what move (initial square, final square, and

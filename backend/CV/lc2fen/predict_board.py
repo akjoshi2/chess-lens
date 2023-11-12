@@ -57,8 +57,8 @@ def predict_board_keras(
     path="",
     a1_pos="",
     test=False,
-    previous_fen: (str | None) = None,
-) -> tuple[str, list[list[int]]] | None:
+    previous_fen  = None,
+) -> tuple[str, list[list[int]]]:
     model = load_model(model_path)
 
     def obtain_piece_probs_for_all_64_squares(
@@ -89,8 +89,8 @@ def predict_board(
     board_path: str,
     a1_pos: str,
     obtain_piece_probs_for_all_64_squares,
-    board_corners: (list[list[int]] | None) = None,
-    previous_fen: (str | None) = None,
+    board_corners: (list[list[int]]) = None,
+    previous_fen: (str) = None,
 ) -> tuple[str, list[list[int]]]:
     """Predict the FEN string from a chessboard image.
 
@@ -253,7 +253,7 @@ def test_predict_board(obtain_piece_probs_for_all_64_squares):
 
 
 def detect_input_board(
-    board_path: str, board_corners: (list[list[int]] | None) = None
+    board_path: str, board_corners: (list[list[int]]) = None
 ) -> list[list[int]]:
     """Detect the input board.
 
@@ -285,7 +285,7 @@ def detect_input_board(
     """
     input_image = cv2.imread(board_path)
     head, tail = os.path.split(board_path)
-    tmp_dir = os.path.join(head, "tmp/")
+    tmp_dir = os.path.join(head, "tmp","")
     if os.path.exists(tmp_dir):
         shutil.rmtree(tmp_dir)
     os.mkdir(tmp_dir)
@@ -311,11 +311,11 @@ def obtain_individual_pieces(board_path: str) -> list[str]:
     :return: Length-64 list of paths to chess-piece images
     """
     head, tail = os.path.split(board_path)
-    tmp_dir = os.path.join(head, "tmp/")
-    pieces_dir = os.path.join(tmp_dir, "pieces/")
+    tmp_dir = os.path.join(head, "tmp","")
+    pieces_dir = os.path.join(tmp_dir, "pieces","")
     os.mkdir(pieces_dir)
     split_board_image_trivial(os.path.join(tmp_dir, tail), "", pieces_dir)
-    return sorted(glob.glob(pieces_dir + "/*.jpg"))
+    return sorted(glob.glob(pieces_dir + os.sep + "*.jpg"))
 
 
 def time_predict_board(
@@ -428,7 +428,7 @@ def print_fen_comparison(
 
 def read_correct_fen(
     fen_file: str,
-) -> tuple[list[str], list[str], list[str | None]]:
+) -> tuple[list[str], list[str], list[str]]:
     """Read the correct FENs.
 
     :param fen_file: Path to the correct-FEN file.

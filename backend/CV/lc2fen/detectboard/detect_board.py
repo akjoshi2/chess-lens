@@ -98,7 +98,7 @@ def __layer(img):
 def detect(
     input_image: np.ndarray,
     output_board: str,
-    board_corners: (list[list[int]] | None) = None,
+    board_corners = None,
 ):
     """Detect the board position and store the cropped detected board.
 

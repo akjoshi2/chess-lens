@@ -12,11 +12,11 @@ from lc2fen.predict_board import predict_board_keras
 
 
 ACTIVATE_KERAS = True
-MODEL_PATH_KERAS = "cpmodels/oldModels/MobileNetV2_0p5_last.h5"
+MODEL_PATH_KERAS = "./CV/Models/Wood.h5"
 IMG_SIZE_KERAS = 224
 PRE_INPUT_KERAS = prein_mobilenet
 
-def parse_arguments() -> tuple[str, str, str | None]:
+def parse_arguments() -> tuple[str, str, str]:
     """Parse the script arguments and set the corresponding flags.
 
     :return: Path of the image or folder, location of the a1 square, and

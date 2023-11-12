@@ -44,7 +44,7 @@ class ImageObject:
     finding a chessboard.
     """
 
-    def __init__(self, img: (np.ndarray | None) = None):
+    def __init__(self, img = None):
         """Save and prepare image array."""
         # We save the whole sequence of transformations attribute[i] is
         # the attribute of iteration i, with iteration 0 being the first

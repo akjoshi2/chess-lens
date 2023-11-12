@@ -1,3 +1,4 @@
+import os
 import requests
 from flask import Flask, request, jsonify
 from stockfish import Stockfish
@@ -8,60 +9,61 @@ import uuid
 import db
 import chess
 import chess.engine
-import imageio
+import base64
+import cv2
+import numpy as np
 import sys
-sys.path.append("/CV")
-from lc2fen import getBoardFen
-
-
-stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
+sys.path.append("CV")
+from lc2fen2 import getBoardFen
+from lc2fen.detectboard import image_object
+stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
 
 app = Flask(__name__)
 
-@app.route("/getFen", methods=["GET"])
+@app.route("/getFen", methods=["POST"])
 def getFen():
     res = {}
-    img = request.args["image"]
-    width = request.args["width"]
-    height = request.args["height"]
+    img = request.form["image"]
+    width = request.form["width"]
+    height = request.form["height"]
+    f= BytesIO(base64.b64decode(img))
+
+    checkImg = yuv420_to_pillow(f, int(width), int(height), int(request.form["frames"]))
+    # image = image_object(checkImg)
+    cv2.imwrite(os.path.join(".","b.jpg"), checkImg)
+
+    toPlay = request.form.get("toPlay", "w")
+
+    res["uuid"] = request.form.get("uuid", uuid.uuid4())
+
     
-    checkImg = yuv420_to_pillow(img, width, height)
+    fen = getBoardFen(os.path.join(".","b.jpg"), None)
 
-    toPlay = request.args.get("toPlay")
-
-    res["uuid"] = request.args.get("uuid", uuid.uuid4())
-
-    try:
-        fen = getBoardFen(checkImg)
-
+    newFen = fen
+    if(not toPlay):
+        # this occurs on non-first render, we need to fetch from the db what the last move was, then change newFen, 
+        checkToMove = db.get_entry("uuid").split(" ")[-5]
+        if(checkToMove):
+            if checkToMove == "w":
+                newFen += " b"
+            else:
+                newFen += " w"
+    else: 
+        # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
+        newFen += " " + toPlay
+    
+    
+    move, check = is_one_move_away(fen, newFen)
+    if not check:
         newFen = fen
-        if(not toPlay):
-            # this occurs on non-first render, we need to fetch from the db what the last move was, then change newFen, 
-            checkToMove = db.get_entry("uuid").split(" ")[-5]
-            if(checkToMove):
-                if checkToMove == "w":
-                    newFen += " b"
-                else:
-                    newFen += " w"
-        else: 
-            # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
-            newFen += " " + toPlay
-        
-        
-        move, check = is_one_move_away(fen, newFen)
-        if not check:
-            newFen = fen
 
-        newFen = apply_uci_move_to_fen(newFen, move)
-        db.insert_db(newFen, res["uuid"])
-        
-        res.update(getEval(newFen))
-        alg_move = uci_to_algebraic(newFen, move)
-        res.update({"move": alg_move})
-        return res
+    newFen = apply_uci_move_to_fen(newFen, move)
+    db.insert_db(newFen, res["uuid"])
     
-    except ValueError:
-        return {}
+    res.update(getEval(newFen))
+    alg_move = uci_to_algebraic(newFen, move)
+    res.update({"move": alg_move})
+    return res
 
     
     
@@ -149,18 +151,16 @@ def apply_uci_move_to_fen(fen, uci_move):
 
     return updated_fen
 
-def yuv420_to_pillow(yuv_file, width, height):
+def yuv420_to_pillow(f, width, height, frames):
     # Read YUV420 image
-    yuv_image = imageio.imread(yuv_file)
+    for i in range(frames):
+        # Read Y, U and V color channels and reshape to height*1.5 x width numpy array
+        yuv = np.frombuffer(f.read(width*height*3//2), dtype=np.uint8).reshape((height*3//2, width))
 
-    # Convert YUV420 to RGB
-    rgb_image = imageio.core.util.yuv420p_to_rgb(yuv_image, width, height)
+        # Convert YUV420 to BGR (for testing), applies BT.601 "Limited Range" conversion.
+        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
+        rgb = cv2.cvtColor(bgr, cv2.COLOR_RGB2BGR)
+        return rgb
 
-    # Create Pillow Image object from RGB array
-    pillow_image = Image.fromarray(rgb_image)
-
-    return pillow_image
-
-# import urllib
 # f = urllib.parse.quote_plus("fen=rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2")
 # print(requests.get("http://localhost:5000/getEval", params={"fen": f}))
