@@ -13,10 +13,15 @@ class ChessboardState extends State<ChessboardWidget> {
     List<String> arr = fen.split(" ")[0].split("/");
     String newstr = "";
     for (int i = arr.length - 1; i >= 0; i--) {
+      String str = arr[i];
+      String reversedStr = "";
+      for (int j = str.length - 1; j >= 0; j--) {
+        reversedStr += str[j];
+      }
       if (i == 0) {
-        newstr += arr[i];
+        newstr += reversedStr;
       } else {
-        newstr += "${arr[i]}/";
+        newstr += "$reversedStr/";
       }
     }
     return "$newstr ${fen.split(" ").sublist(1).join(" ")}";
