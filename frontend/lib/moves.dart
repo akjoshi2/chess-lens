@@ -9,6 +9,12 @@ class MovesWidget extends StatefulWidget {
 class MovesState extends State<MovesWidget> {
   @override
   Widget build(BuildContext context) {
-    return Text("Move 1");
+    return Expanded(
+        child: Container(
+            height: 244,
+            padding: const EdgeInsets.all(10.0),
+            width: 78,
+            decoration: BoxDecoration(color: Colors.white),
+            child: Text("Move 1")));
   }
 }
