@@ -1,6 +1,8 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'dart:convert';
 
 @override
 class CameraWidget extends StatefulWidget {
@@ -13,8 +15,24 @@ class CameraWidget extends StatefulWidget {
 class CameraWidgetState extends State<CameraWidget> {
   late CameraController controller;
   List<CameraDescription>? cameras;
+
   bool timer = true;
   var _cameraInitialized = false;
+
+  Uint8List convertImgToBytes(CameraImage img) {
+    int totBytes = 0;
+    for (Plane plane in img.planes) {
+      totBytes += plane.bytes.length;
+    }
+    Uint8List bytes = Uint8List(totBytes);
+    int offset = 0;
+    for (Plane plane in img.planes) {
+      bytes.setRange(offset, offset + plane.bytes.length, plane.bytes);
+      offset += plane.bytes.length;
+    }
+    return bytes;
+  }
+
   void _initCamera() async {
     cameras = await availableCameras();
     controller = CameraController(cameras![0], ResolutionPreset.max);
@@ -22,6 +40,10 @@ class CameraWidgetState extends State<CameraWidget> {
       // Start ImageStream
       await controller.startImageStream((CameraImage image) {
         if (timer) {
+          Uint8List myBytes = convertImgToBytes(image);
+          print(base64Encode(myBytes));
+          // String base64Image = base64Encode(imageBytes);
+          // printw(base64);
           // Future.delayed(const Duration(seconds: 5)).then() getPictures
         }
       });
