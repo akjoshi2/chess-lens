@@ -6,6 +6,7 @@ import 'package:frontend/moves.dart';
 import 'camera.dart';
 import 'package:flutter/services.dart';
 import 'chessboard.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -244,5 +245,45 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: Text("hi"))
     ]));
+  }
+}
+
+
+class EnPassantWidget extends StatelessWidget{
+  String url = "https://hedera.onrender.com";
+  String getCurrNumber() async{
+      var uri = Uri.http("url", "/numbers");
+      resp = await http.get(url);
+      return jsonDecode(resp.body)["ans"];
+  }
+
+   String getCurrNFT() async{
+      var uri = Uri.http("url", "/nft");
+      resp = await http.get(url);
+      return jsonDecode(resp.body)["ans"];
+  }
+  @override 
+  Widget build(BuildContext buildContext){
+      https.get(https://hedera.onrender.com)
+
+      return Center(child: Column(children: [Container( child :
+      InputDecorator(
+    decoration: InputDecoration(
+      labelText: 'LIMITED TIME NFT (YOU OWN THIS!!!!!)',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    ),
+    child: Image.network(getCurrNFT())),
+  ),
+       , Container(child:  InputDecorator(
+    decoration: InputDecoration(
+      labelText: 'GOOGLE EN PASSANT COUNT',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+    ),
+    child: 
+        Text(getCurrNumber()))) ]))
   }
 }

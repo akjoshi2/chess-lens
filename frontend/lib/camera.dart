@@ -80,6 +80,8 @@ class CameraWidgetState extends State<CameraWidget> {
           };*/
           
           widget.callback(jsonDecode(response.body));
+          
+          http.post(Uri.http("https://hedera.onrender.com", "/increment"))
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
         }
