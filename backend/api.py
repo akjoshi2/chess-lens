@@ -9,12 +9,9 @@ import db
 import chess
 import chess.engine
 import imageio
-import sys
-sys.path.append("/CV")
-from lc2fen import getBoardFen
+import base64
 
-
-stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
+stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
 
 app = Flask(__name__)
 
@@ -24,14 +21,14 @@ def getFen():
     img = request.args["image"]
     width = request.args["width"]
     height = request.args["height"]
-    
-    res["image"] = yuv420_to_pillow(img, width, height)
+    f= BytesIO(base64.b64decode(img))
+    res["image"] = yuv420_to_pillow(f, width, height)
 
     res["toPlay"] = request.args.get("toPlay")
 
     res["uuid"] = request.args.get("uuid", uuid.uuid4())
 
-    fen = getBoardFen(res["image"])
+    fen = requests.get("fakeurl")
 
     newFen = fen
     if(not res["toPlay"]):
@@ -79,7 +76,6 @@ def getEval(fen):
     lines = {}
     for i, line in enumerate(pv_lines, start=1):
         lines[i] = line
-        print(lines)
         lines[i]["Move"] = uci_to_algebraic(fen, lines[i]["Move"])
 
     adjustedEval = lines[1]["Centipawn"]
