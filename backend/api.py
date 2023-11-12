@@ -28,16 +28,14 @@ def getFen():
     height = request.form["height"]
     f= BytesIO(base64.b64decode(img))
 
-    checkImg = yuv420_to_pillow(f, int(width), int(height), int(request.form["frames"]))
-    # image = image_object(checkImg)
-    cv2.imwrite(os.path.join(".","b.jpg"), checkImg)
+    imagePath = yuv420_to_pillow(f, int(width), int(height))
 
     toPlay = request.form.get("toPlay", "w")
 
     res["uuid"] = request.form.get("uuid", uuid.uuid4())
 
     
-    fen = getBoardFen(os.path.join(".","b.jpg"), None)
+    fen = getBoardFen(imagePath, None)
 
     newFen = fen
     if(not toPlay):
@@ -151,16 +149,16 @@ def apply_uci_move_to_fen(fen, uci_move):
 
     return updated_fen
 
-def yuv420_to_pillow(f, width, height, frames):
+def yuv420_to_pillow(f, width, height):
     # Read YUV420 image
-    for i in range(frames):
         # Read Y, U and V color channels and reshape to height*1.5 x width numpy array
-        yuv = np.frombuffer(f.read(width*height*3//2), dtype=np.uint8).reshape((height*3//2, width))
+    yuv = np.frombuffer(f.read(width*height*3//2), dtype=np.uint8).reshape((height*3//2, width))
 
         # Convert YUV420 to BGR (for testing), applies BT.601 "Limited Range" conversion.
-        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
-        rgb = cv2.cvtColor(bgr, cv2.COLOR_RGB2BGR)
-        return rgb
+    bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2RGB_NV21)
+    cv2.imwrite(os.path.join(".",'result.jpg'),bgr)
+    return os.path.join(".",'result.jpg')
+    
 
 # f = urllib.parse.quote_plus("fen=rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2")
 # print(requests.get("http://localhost:5000/getEval", params={"fen": f}))

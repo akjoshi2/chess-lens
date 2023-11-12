@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 @override
 class CameraWidget extends StatefulWidget {
@@ -38,15 +39,26 @@ class CameraWidgetState extends State<CameraWidget> {
     controller = CameraController(cameras![0], ResolutionPreset.max);
     controller.initialize().then((_) async {
       // Start ImageStream
-      await controller.startImageStream((CameraImage image) {
+      await controller.startImageStream((CameraImage image) async {
         if (timer) {
+          Future.delayed(const Duration(seconds: 5), () {
+              timer= true;
+          });
+
           Uint8List myBytes = convertImgToBytes(image);
-          print(base64Encode(myBytes));
-          print(image.width);
-          print(image.height);
+          var b64 = base64Encode(myBytes);
+          final queryParams = {
+              "width" : image.width.toString(),
+              "height" : image.height.toString(),
+              "frames" : image.planes.length.toString(),
+              "image" : b64
+          };
+     
+          timer = false;
+          var uri = Uri.http("localhost:5000", "/getFen");
+          await http.post(uri, body: queryParams);
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
-          // Future.delayed(const Duration(seconds: 5)).then() getPictures
         }
       });
       setState(() {

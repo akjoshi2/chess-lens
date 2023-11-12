@@ -39,6 +39,7 @@ dependencies:
   flutter_chess_board: ^1.0.1
   loading_animation_widget: ^1.2.0+4
   flutter_advanced_switch: ^3.0.1
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
