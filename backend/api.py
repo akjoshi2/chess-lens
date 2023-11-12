@@ -17,7 +17,7 @@ sys.path.append("CV")
 from lc2fen2 import getBoardFen
 from lc2fen.detectboard import image_object
 stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
-
+engine = chess.engine.SimpleEngine.popen_uci("stockfish.exe")
 app = Flask(__name__)
 
 @app.route("/getFen", methods=["POST"])
@@ -68,26 +68,31 @@ def getFen():
     # todo: need to change the fen to reflect whose move it is
     # first, we receive a uuid from the frontend, or nothing 
 
+def getMoves(line, board):
+    arr = []
+    for move in line["pv"]:
+        arr.append(board.san(move))
+        board.push(move)
+    for i in range(line["pv"]):
+        board.pop()
+    return arr
+
 def getEval(fen):
     # Get the FEN parameter from the request
     # Check if the FEN parameter is missing
     if fen is None:
         return jsonify({"error": "Missing 'fen' parameter"}), 400
 
-    # Set up Stockfish analysis
-    stockfish.set_fen_position(fen)
-    # Create a dictionary to store lines
-    pv_lines = stockfish.get_top_moves(5)
-    if not pv_lines:
-        return {"evaluation": "finished", "lines": "none"}
+    board = chess.Board(fen)
+    info = engine.analyse(board, chess.engine.Limit(time=2),multipv=3)
+    
     lines = {}
-    for i, line in enumerate(pv_lines, start=1):
-        lines[i] = line
-        lines[i]["Move"] = uci_to_algebraic(fen, lines[i]["Move"])
 
-    adjustedEval = lines[1]["Centipawn"]
-    if(lines[1]["Mate"]):
-        adjustedEval = str(lines[1]["Mate"]) + "M"
+    for i in range(len(info)):
+        arr = getMoves(info[i])
+        lines[i] = " ".join(arr)
+
+
 
     response = {"evaluation": adjustedEval, "lines": lines}
     
@@ -119,8 +124,6 @@ def uci_to_algebraic(fen, uci_move):
 
     # Convert UCI move to chess.Move object
     move = chess.Move.from_uci(uci_move)
-
-    # Apply the move to the board
 
     # Convert the move to algebraic notation
     print(uci_move)
