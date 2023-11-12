@@ -43,83 +43,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _controller = ValueNotifier<bool>(true);
   List<String> moves = [
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
-    "e5",
+    "e4",
+    "e5",
+    "Nf3",
+    "Nf6",
+    "Nxe5",
+    "Nc6",
+    "Nxc6",
+    "dxc6",
+    "d3",
+    "Bc5",
+    "a3"
+
+
   ];
   Map<String, dynamic> jsonOutput = {
-    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    "evaluation": (10).toString(),
-    "move": "KC6",
-    "line": {"0": "a5", "1": "b5", "2": "c5"},
+    "fen": "r1bqk2r/ppp2ppp/2p2n2/2b5/4P3/P2P4/1PP2PPP/RNBQKB1R b KQkq - 0 6",
+    "evaluation": (-5.3).toString(),
+    "move": "",
+    'lines': {"1": {'evaluation': -9993, 'lines': 'Bxf2 Rxd1+ Kxe2 Qxc2+ Nd2 Rxd2+ Kf3 Qf5+ Ke3 Qxf2+ Ke4 Nf6+ Ke5 Qxa1#'}, "2": {'evaluation': -9997, 'lines': 'Kxf2 Qd4+ Kf1 hxg1=Q+ Rxg1 Qxg1#'}}
   };
 
   bool whiteToPlay = true;
@@ -136,27 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     PageController pgcont = PageController();
-
-    print(jsonOutput["line"].toString());
-    List<String> getStockLines() {
-      List<String> stockLines = [];
-      for (int i = 0; i < 3; i++) {
-        if (jsonOutput["line"] != null) {
-          stockLines.add(jsonOutput["line"][i.toString()]["lines"]);
-        }
-      }
-      return stockLines;
-    }
-
-    List<String> getStockEvals() {
-      List<String> stockEvals = [];
-      for (int i = 0; i < 3; i++) {
-        if (jsonOutput["line"] != null) {
-          stockEvals.add(jsonOutput["line"][i.toString()]["evaluation"]);
-        }
-      }
-      return stockEvals;
-    }
+    List<String> stockLines = ['Bg4 Be3 Bxe3 fxe3 Qf6', "Ng4 Be3 Bxe3 fxe3 Qf6"];
+    List<String> stockEvals = ["-6.2","-5.8"];
 
     return Scaffold(
         body: PageView(controller: pgcont, children: [
@@ -180,6 +103,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     } else if (val["move"] != "") {
                       moves.add(val["move"]);
                     }
+                    print("CHECK");
+                    /*if (val["lines"] != "") {
+                      print(val["lines"]);
+                      stockLines = [];
+                      for (int i = 1; i < 3; i++) {
+                        if (jsonOutput["lines"] != null) {
+                          stockLines.add(jsonOutput["lines"][i.toString()]["lines"].toString());
+                        }
+                      }
+                      print(stockLines);
+                      stockEvals = [];
+                      for (int i = 1; i < 3; i++) {
+                        if (jsonOutput["lines"] != null) {
+                          stockEvals.add(jsonOutput["lines"][i.toString()]["evaluation"].toString());
+                        }
+                      }
+                    }*/
                   });
                 }),
             Column(
@@ -291,8 +231,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       child: LinesWidget(
-                        lines: getStockLines(),
-                        lineEvals: getStockEvals(),
+                        lines: stockLines,
+                        lineEvals: stockEvals,
                       ), // Replace YourWidget with your desired widget
                     )
                   ])

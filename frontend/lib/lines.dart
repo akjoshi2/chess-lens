@@ -14,8 +14,7 @@ class LinesState extends State<LinesWidget> {
   Widget build(BuildContext context) {
     List<String> lines = widget.lines;
     List<String> lineEvals = widget.lineEvals;
-    return Expanded(
-        child: Container(
+    return Container(
             height: 95,
             padding: const EdgeInsets.all(10.0),
             width: 411,
@@ -24,6 +23,6 @@ class LinesState extends State<LinesWidget> {
                 itemCount: lines.length,
                 itemBuilder: (content, index) {
                   return Text("${lineEvals[index]} ${lines[index]}");
-                })));
+                }));
   }
 }

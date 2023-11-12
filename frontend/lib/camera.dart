@@ -67,12 +67,18 @@ class CameraWidgetState extends State<CameraWidget> {
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
           var response = await http.post(uri, body: queryParams);
+          if(response.statusCode != 200){
+            timer = true;
+            return;
+          }
+          uuid = jsonDecode(response.body)["uuid"];
           /*var responsebody = {
             "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
             "evaluation": "-1.5",
             "move" : "KC6",
             "line": {"0": "a5", "1": "b5", "2": "c5"},
           };*/
+          
           widget.callback(jsonDecode(response.body));
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
@@ -119,11 +125,12 @@ class CameraWidgetState extends State<CameraWidget> {
         margin: EdgeInsets.fromLTRB(midway, 335, 0, 10),
         child: ElevatedButton(
           onPressed: () {
+              uuid = "";
               var responsebody = {
               "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-              "evaluation": "-1.5",
+              "evaluation": "0.0",
               "move" : "CLR",
-              "line": {"0": "a5", "1": "b5", "2": "c5"},
+              'lines': {"1": {'evaluation': -9993, 'lines': 'Bxf2 Rxd1+ Kxe2 Qxc2+ Nd2 Rxd2+ Kf3 Qf5+ Ke3 Qxf2+ Ke4 Nf6+ Ke5 Qxa1#'}, "2": {'evaluation': -9997, 'lines': 'Kxf2 Qd4+ Kf1 hxg1=Q+ Rxg1 Qxg1#'}}
             };
             widget.callback(responsebody);
           },
