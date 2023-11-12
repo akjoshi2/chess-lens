@@ -32,16 +32,18 @@ def insert_db(fen, uuid):
 def get_entry(uuid):
     db = sqlite3.connect("chess_db")
     curr = db.cursor()
-    insert_table_query = '''
-        SELECT fen FROM active WHERE uuid={uuid} ORDER BY date DESC
+    insert_table_query = f'''
+        SELECT fen FROM active WHERE uuid={uuid} ORDER BY date DESC LIMIT 1
     '''
-    res = curr.execute(insert_table_query, uuid).one()
+    res = curr.execute(insert_table_query).fetchall()
     curr.close()
     return res
 
 
 if __name__ == "__main__":
     create_db()
+    # insert_db("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",1)
+    print(get_entry(5))
 
 
 

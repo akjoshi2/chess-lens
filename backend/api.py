@@ -1,7 +1,6 @@
 import os
 import requests
 from flask import Flask, request, jsonify
-from stockfish import Stockfish
 import base64
 from PIL import Image
 from io import BytesIO
@@ -16,7 +15,6 @@ import sys
 sys.path.append("CV")
 from lc2fen2 import getBoardFen
 from lc2fen.detectboard import image_object
-stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
 engine = chess.engine.SimpleEngine.popen_uci("stockfish.exe")
 app = Flask(__name__)
 
@@ -34,39 +32,40 @@ def getFen():
 
     res["uuid"] = request.form.get("uuid", uuid.uuid4())
 
-    
-    fen = getBoardFen(imagePath, None)
-
-    newFen = fen
     if(not toPlay):
         # this occurs on non-first render, we need to fetch from the db what the last move was, then change newFen, 
-        checkToMove = db.get_entry("uuid").split(" ")[-5]
+        prevFen  = db.get_entry(res["uuid"])
+        print(prevFen)
+        checkToMove = prevFen.split(" ")[1]
+        newFen = getBoardFen(imagePath, prevFen)
         if(checkToMove):
             if checkToMove == "w":
                 newFen += " b"
             else:
                 newFen += " w"
+        move, check = is_one_move_away(prevFen, newFen)
+        if not check:
+            newFen = prevFen
+            res.update(getEval(newFen))
+            res.update({"move": ""})
+            return res
+
+        newFen = apply_uci_move_to_fen(newFen, move)
+        db.insert_db(newFen, res["uuid"])
+        alg_move = uci_to_algebraic(newFen, move)
+        res.update(getEval(newFen))
+        res.update({"move": alg_move})
     else: 
+        newFen = getBoardFen(imagePath, None)
         # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
         newFen += " " + toPlay
+        db.insert_db(newFen, res["uuid"])
+        res.update(getEval(newFen))
+        res.update({"move": ""})
     
-    
-    move, check = is_one_move_away(fen, newFen)
-    if not check:
-        newFen = fen
 
-    newFen = apply_uci_move_to_fen(newFen, move)
-    db.insert_db(newFen, res["uuid"])
-    
-    res.update(getEval(newFen))
-    alg_move = uci_to_algebraic(newFen, move)
-    res.update({"move": alg_move})
     return res
 
-    
-    
-    # todo: need to change the fen to reflect whose move it is
-    # first, we receive a uuid from the frontend, or nothing 
 
 def getMoves(line, board):
     arr = []
