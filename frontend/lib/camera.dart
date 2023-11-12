@@ -70,7 +70,8 @@ class CameraWidgetState extends State<CameraWidget> {
           var responsebody = {
             "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
             "evaluation": "-1.5",
-            "move" : "KC6"
+            "move" : "KC6",
+            "line": {"0": "a5", "1": "b5", "2": "c5"},
           };
           widget.callback(responsebody);
           // String base64Image = base64Encode(imageBytes);

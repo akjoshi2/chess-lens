@@ -46,7 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> jsonOutput = {
     "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
     "evaluation": 0.0.toString(),
-    "move" : "KC6"
+    "move" : "KC6",
+    "line" : {"0": "a5", "1": "b5", "2": "c5"},
   };
 
   bool whiteToPlay = true;
@@ -62,12 +63,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    print(jsonOutput["line"].toString());
+    List<String> getStockLines() {
+      List<String> stockLines = [];
+      for (int i = 0; i < 3; i ++)
+      {
+        if(jsonOutput["line"] != null)
+        {
+          stockLines.add(jsonOutput["line"][i.toString()]);
+        }
+      }
+      return stockLines;
+    }
+
     return Scaffold(
         body: GridView.count(
             crossAxisCount:
@@ -84,11 +92,11 @@ class _MyHomePageState extends State<MyHomePage> {
               callback: (val) {
                 setState(() {
                   jsonOutput = val;
-                  moves.add(val["move"]);
-                  print(jsonOutput);
+                  if (val["move"] != "")
+                  {
+                    moves.add(val["move"]);
+                  }
                 });
-                print(jsonOutput);
-                print(val);
               }),
           Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -196,7 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                     child:
-                        LinesWidget(), // Replace YourWidget with your desired widget
+                        LinesWidget(lines: getStockLines()), // Replace YourWidget with your desired widget
                   )
                 ])
               ])

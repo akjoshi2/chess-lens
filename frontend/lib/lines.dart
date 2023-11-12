@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 class LinesWidget extends StatefulWidget {
-  const LinesWidget({Key? key}) : super(key: key);
+  final List<String> lines;
+  const LinesWidget({Key? key, required this.lines}) : super(key: key);
   @override
   LinesState createState() => LinesState();
 }
 
 class LinesState extends State<LinesWidget> {
   List<String> lineEvals = ["+0.92", "+0.54", "+0.44"];
-  List<String> lines = ["b3", "Nc3", "e5"];
   @override
   Widget build(BuildContext context) {
+    List<String> lines = widget.lines;
     return Expanded(
         child: Container(
             height: 95,
