@@ -37,21 +37,23 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
-            Text(
-              topAdvString,
-              style: TextStyle(
-                fontSize: 7,
-                color: widget.flipped ? Colors.black : Colors.white,
+            if (topAdv >= botAdv)
+              Text(
+                topAdvString,
+                style: TextStyle(
+                  fontSize: 7,
+                  color: widget.flipped ? Colors.black : Colors.white,
+                ),
               ),
-            ),
             SizedBox(height: 265),
-            Text(
-              botAdvString,
-              style: TextStyle(
-                fontSize: 7,
-                color: widget.flipped ? Colors.white : Colors.black,
+            if (botAdv > topAdv)
+              Text(
+                botAdvString,
+                style: TextStyle(
+                  fontSize: 7,
+                  color: widget.flipped ? Colors.white : Colors.black,
+                ),
               ),
-            ),
           ]),
         ),
       ),
