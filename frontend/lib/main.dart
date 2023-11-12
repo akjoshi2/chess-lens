@@ -42,12 +42,84 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _controller = ValueNotifier<bool>(true);
-  List<String> moves = [];
+  List<String> moves = [
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+    "e5",
+  ];
   Map<String, dynamic> jsonOutput = {
     "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
     "evaluation": 0.0.toString(),
-    "move" : "KC6",
-    "line" : {"0": "a5", "1": "b5", "2": "c5"},
+    "move": "KC6",
+    "line": {"0": "a5", "1": "b5", "2": "c5"},
   };
 
   bool whiteToPlay = true;
@@ -66,14 +138,22 @@ class _MyHomePageState extends State<MyHomePage> {
     print(jsonOutput["line"].toString());
     List<String> getStockLines() {
       List<String> stockLines = [];
-      for (int i = 0; i < 3; i ++)
-      {
-        if(jsonOutput["line"] != null)
-        {
-          stockLines.add(jsonOutput["line"][i.toString()]);
+      for (int i = 0; i < 3; i++) {
+        if (jsonOutput["line"] != null) {
+          stockLines.add(jsonOutput["line"][i.toString()]["lines"]);
         }
       }
       return stockLines;
+    }
+
+    List<String> getStockEvals() {
+      List<String> stockEvals = [];
+      for (int i = 0; i < 3; i++) {
+        if (jsonOutput["line"] != null) {
+          stockEvals.add(jsonOutput["line"][i.toString()]["evaluation"]);
+        }
+      }
+      return stockEvals;
     }
 
     return Scaffold(
@@ -92,13 +172,9 @@ class _MyHomePageState extends State<MyHomePage> {
               callback: (val) {
                 setState(() {
                   jsonOutput = val;
-                  if (val["move"] == "CLR")
-                  {
+                  if (val["move"] == "CLR") {
                     moves = [];
-
-                  }
-                  else if (val["move"] != "")
-                  {
+                  } else if (val["move"] != "") {
                     moves.add(val["move"]);
                   }
                 });
@@ -148,7 +224,9 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: 25,
                           height: 288,
-                          child: ChessbarWidget(flipped: !_controller.value, eval: double.parse(jsonOutput["evaluation"]))),
+                          child: ChessbarWidget(
+                              flipped: !_controller.value,
+                              eval: double.parse(jsonOutput["evaluation"]))),
                       const SizedBox(width: 10),
                       Column(children: [
                         Container(
@@ -208,8 +286,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ],
                     ),
-                    child:
-                        LinesWidget(lines: getStockLines()), // Replace YourWidget with your desired widget
+                    child: LinesWidget(
+                      lines: getStockLines(),
+                      lineEvals: getStockEvals(),
+                    ), // Replace YourWidget with your desired widget
                   )
                 ])
               ])
