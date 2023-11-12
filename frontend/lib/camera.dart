@@ -45,16 +45,39 @@ class CameraWidgetState extends State<CameraWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: widget.orientation == Orientation.portrait ? 1 : 1,
-        heightFactor: widget.orientation == Orientation.portrait ? 1 : 1,
-        child: (_cameraInitialized)
-            ? AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: CameraPreview(controller))
-            : LoadingAnimationWidget.stretchedDots(
-                color: Colors.white,
-                size: 200,
-              ));
+    double midway = MediaQuery.of(context).orientation == Orientation.portrait
+        ? (MediaQuery.of(context).size.width * 0.5) - 35
+        : (MediaQuery.of(context).size.height * 0.5) - 35;
+
+    return Stack(children: <Widget>[
+      FractionallySizedBox(
+          widthFactor: widget.orientation == Orientation.portrait ? 1 : 1,
+          heightFactor: widget.orientation == Orientation.portrait ? 1 : 1,
+          child: (_cameraInitialized)
+              ? AspectRatio(
+                  aspectRatio: controller.value.aspectRatio,
+                  child: CameraPreview(controller))
+              : LoadingAnimationWidget.stretchedDots(
+                  color: Colors.white,
+                  size: 200,
+                )),
+      Container(
+        margin: EdgeInsets.fromLTRB(midway, 335, 0, 10),
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+              shape: CircleBorder(side: BorderSide(color: Colors.black)),
+              minimumSize: Size(70, 70),
+              backgroundColor: Colors.white, // Set the background color here
+              elevation: 8.0,
+              shadowColor: Colors.black),
+          child: Icon(
+            Icons.refresh,
+            size: 45.0,
+            color: Colors.green,
+          ),
+        ),
+      ),
+    ]);
   }
 }
