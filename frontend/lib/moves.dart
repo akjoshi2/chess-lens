@@ -19,7 +19,7 @@ class MovesState extends State<MovesWidget> {
             child: ListView.builder(
                 itemCount: moves.length,
                 itemBuilder: (content, index) {
-                  return Text("$index. ${moves[index]}");
+                  return Text("${index + 1}. ${moves[index]}");
                 })));
   }
 }
