@@ -42,11 +42,12 @@ def load_image(image, img_size: int, preprocess_func) -> np.ndarray:
     """
     if(isinstance(image, str)):
         img = load_img(image, target_size=(img_size, img_size))
+        img_tensor = img_to_array(img)
+        img_tensor = np.expand_dims(img_tensor, axis=0)
+        return preprocess_func(img_tensor)
     else:
-        img = image
-    img_tensor = img_to_array(img)
-    img_tensor = np.expand_dims(img_tensor, axis=0)
-    return preprocess_func(img_tensor)
+        img_tensor = np.expand_dims(image, axis=0)
+        return preprocess_func(img_tensor)
 
 
 def predict_board_keras(
