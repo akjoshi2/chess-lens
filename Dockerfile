@@ -10,6 +10,9 @@ RUN apt-get update && \
 COPY . .
 
 RUN pip install -r backend/requirements.txt
+
+RUN python3 backend/db.py
+
 ENV FLASK_APP=/backend/api.py
 EXPOSE 8080
 WORKDIR /backend
