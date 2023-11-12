@@ -61,10 +61,8 @@ def getFen():
     # todo: need to change the fen to reflect whose move it is
     # first, we receive a uuid from the frontend, or nothing 
 
-@app.route("/getEval", methods=["GET"])
-def getEval():
+def getEval(fen):
     # Get the FEN parameter from the request
-    fen = request.args["fen"]
     # Check if the FEN parameter is missing
     if fen is None:
         return jsonify({"error": "Missing 'fen' parameter"}), 400
@@ -124,11 +122,11 @@ def uci_to_algebraic(fen, uci_move):
 
     return algebraic_move
 
-@app.route("/gettestres", methods=["GET"])
-def gettestres():
-    fen1 = request.args["fen1"]
-    uci = request.args["uci"]
-    return {"Answer": apply_uci_move_to_fen(fen1, uci)}
+# @app.route("/gettestres", methods=["GET"])
+# def gettestres():
+#     fen1 = request.args["fen1"]
+#     uci = request.args["uci"]
+#     return {"Answer": apply_uci_move_to_fen(fen1, uci)}
 
 def apply_uci_move_to_fen(fen, uci_move):
     # Create a chess.Board object from the FEN
