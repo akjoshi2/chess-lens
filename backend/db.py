@@ -14,7 +14,7 @@ def create_db():
     '''
     curr.execute(create_table_query)
 
-    curr.commit()
+    db.commit()
     curr.close()
 
 def insert_db(fen, uuid):
@@ -26,7 +26,7 @@ def insert_db(fen, uuid):
 
     curr.execute(insert_table_query, (uuid, fen, datetime.now()))
 
-    curr.commit()
+    db.commit()
     curr.close()
 
 def get_entry(uuid):
