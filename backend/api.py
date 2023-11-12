@@ -9,9 +9,12 @@ import db
 import chess
 import chess.engine
 import imageio
-import base64
+import sys
+sys.path.append("/CV")
+from lc2fen import getBoardFen
 
-stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
+
+stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
 
 app = Flask(__name__)
 
@@ -21,40 +24,44 @@ def getFen():
     img = request.args["image"]
     width = request.args["width"]
     height = request.args["height"]
-    f= BytesIO(base64.b64decode(img))
-    res["image"] = yuv420_to_pillow(f, width, height)
+    
+    checkImg = yuv420_to_pillow(img, width, height)
 
-    res["toPlay"] = request.args.get("toPlay")
+    toPlay = request.args.get("toPlay")
 
     res["uuid"] = request.args.get("uuid", uuid.uuid4())
 
-    fen = requests.get("fakeurl")
+    try:
+        fen = getBoardFen(checkImg)
 
-    newFen = fen
-    if(not res["toPlay"]):
-        # this occurs on non-first render, we need to fetch from the db what the last move was, then change newFen, 
-        checkToMove = db.get_entry("uuid").split(" ")[-5]
-        if(checkToMove):
-            if checkToMove == "w":
-                newFen += " b"
-            else:
-                newFen += " w"
-    else: 
-        # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
-        newFen += " " + res["toPlay"]
-    
-    
-    move, check = is_one_move_away(fen, newFen)
-    if not check:
         newFen = fen
+        if(not toPlay):
+            # this occurs on non-first render, we need to fetch from the db what the last move was, then change newFen, 
+            checkToMove = db.get_entry("uuid").split(" ")[-5]
+            if(checkToMove):
+                if checkToMove == "w":
+                    newFen += " b"
+                else:
+                    newFen += " w"
+        else: 
+            # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
+            newFen += " " + toPlay
+        
+        
+        move, check = is_one_move_away(fen, newFen)
+        if not check:
+            newFen = fen
 
-    newFen = apply_uci_move_to_fen(newFen, move)
-    db.insert_db(newFen, res["uuid"])
+        newFen = apply_uci_move_to_fen(newFen, move)
+        db.insert_db(newFen, res["uuid"])
+        
+        res.update(getEval(newFen))
+        alg_move = uci_to_algebraic(newFen, move)
+        res.update({"move": alg_move})
+        return res
     
-    res.update(getEval(newFen))
-    alg_move = uci_to_algebraic(newFen, move)
-    res.update({"move": alg_move})
-    return res
+    except ValueError:
+        return {}
 
     
     
