@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/chessboard.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:frontend/chessbar.dart';
 import 'camera.dart';
+import 'package:flutter/services.dart';
+import 'chessboard.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack).then(
+    (_) => runApp(const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -34,14 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const Stack(children: [
-          CameraWidget(),
-          ChessboardWidget(),
-          ChessbarWidget(
-            flipped: false,
-          ),
-          MyHomePage(title: 'Flutter Demo Home Page')
-        ]));
+        home: const MyHomePage(title: 'Flutter Demo Home Page'));
   }
 }
 
@@ -64,6 +62,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _controller = ValueNotifier<bool>(true);
+  bool whiteToPlay = true;
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        whiteToPlay = _controller.value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -72,13 +82,56 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return const Scaffold(
-      body: Row(children: [
-        ChessboardWidget(),
-        ChessbarWidget(
-          flipped: false,
-        ),
-      ]),
-    );
+    return Scaffold(
+        body: GridView.count(
+            crossAxisCount:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 1
+                    : 2,
+            crossAxisSpacing: 0,
+            mainAxisSpacing: 0,
+            padding: const EdgeInsets.all(0),
+            children: [
+          CameraWidget(
+              key: const ObjectKey(1),
+              orientation: MediaQuery.of(context).orientation),
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          width: MediaQuery.of(context).orientation ==
+                                  Orientation.portrait
+                              ? MediaQuery.of(context).size.width * .7
+                              : MediaQuery.of(context).size.height * .7,
+                          height: 288,
+                          child: ChessboardWidget(flipped: !_controller.value)),
+                      SizedBox(
+                          width: 25,
+                          height: 288,
+                          child: ChessbarWidget(flipped: !_controller.value)),
+                      SizedBox(
+                          width: 98,
+                          height: 35,
+                          child: AdvancedSwitch(
+                            controller: _controller,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(2)),
+                            width: 80,
+                            height: 20,
+                            activeColor: Colors.white,
+                            inactiveColor: Colors.black,
+                            activeChild: const Text('WHITE',
+                                style: TextStyle(color: Colors.black)),
+                            inactiveChild: const Text('BLACK',
+                                style: TextStyle(color: Colors.white)),
+                          ))
+                    ])
+              ])
+        ]));
   }
 }
