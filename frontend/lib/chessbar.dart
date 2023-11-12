@@ -15,7 +15,7 @@ class ChessbarState extends State<ChessbarWidget> {
         : [Colors.black, Colors.black, Colors.white, Colors.white];
     double topAdv = 0.0;
     String topAdvString = "+${topAdv.toString()}";
-    double botAdv = 0.0;
+    double botAdv = -1 * topAdv;
     String botAdvString = "+${botAdv.toString()}";
     double whitePercent = 50.00;
     double whiteStop = (100 - whitePercent) / 100;
