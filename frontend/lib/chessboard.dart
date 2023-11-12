@@ -36,7 +36,8 @@ class ChessboardState extends State<ChessboardWidget> {
     var flippedFen = widget.flipped ? flipBoard(inputFen) : (inputFen);
     controller = ChessBoardController.fromFEN(flippedFen);
 
-    return FractionallySizedBox(
+    return IgnorePointer(
+        child: FractionallySizedBox(
       widthFactor: 1,
       heightFactor: 1,
       child: ChessBoard(
@@ -44,6 +45,6 @@ class ChessboardState extends State<ChessboardWidget> {
         boardColor: BoardColor.orange,
         boardOrientation: PlayerColor.white,
       ),
-    );
+    ));
   }
 }

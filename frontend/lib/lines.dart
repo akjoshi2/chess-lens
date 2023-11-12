@@ -8,7 +8,7 @@ class LinesWidget extends StatefulWidget {
 
 class LinesState extends State<LinesWidget> {
   List<String> lineEvals = ["+0.92", "+0.54", "+0.44"];
-  List<String> lines = ["exf5", "Nc3", "e5"];
+  List<String> lines = ["b3", "Nc3", "e5"];
   @override
   Widget build(BuildContext context) {
     return Expanded(
