@@ -42,6 +42,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _controller = ValueNotifier<bool>(true);
+  Map<String, dynamic> jsonOutput = {
+    "fen": 'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1'
+  };
+
   bool whiteToPlay = true;
   @override
   void initState() {
@@ -52,10 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
   }
-
-  Map<String, dynamic> jsonOutput = {
-    "fen": 'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1'
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,14 @@ class _MyHomePageState extends State<MyHomePage> {
           CameraWidget(
               key: const ObjectKey(1),
               orientation: MediaQuery.of(context).orientation,
-              callback: (val) => setState(() => jsonOutput = val)),
+              callback: (val) {
+                setState(() {
+                  jsonOutput = val;
+                  print(jsonOutput);
+                });
+                print(jsonOutput);
+                print(val);
+              }),
           Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,7 +5,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-typedef MapCallback = void Function(Map<String, dynamic> val);
+typedef void MapCallback(Map<String, dynamic> val);
 
 @override
 class CameraWidget extends StatefulWidget {
@@ -60,8 +60,11 @@ class CameraWidgetState extends State<CameraWidget> {
 
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
-          var response = await http.post(uri, body: queryParams);
-          widget.callback(jsonDecode(response.body));
+          //var response = await http.post(uri, body: queryParams);
+          var responsebody = {
+            "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+          };
+          widget.callback(responsebody);
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
         }
@@ -75,6 +78,7 @@ class CameraWidgetState extends State<CameraWidget> {
   @override
   void initState() {
     super.initState();
+
     _initCamera();
   }
 
