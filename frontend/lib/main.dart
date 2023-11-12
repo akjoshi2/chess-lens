@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:frontend/lines.dart';
 import 'package:frontend/chessbar.dart';
-import 'package:frontend/lines.dart';
 import 'package:frontend/moves.dart';
 import 'camera.dart';
 import 'package:flutter/services.dart';
