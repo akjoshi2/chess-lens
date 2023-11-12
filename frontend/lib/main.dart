@@ -92,7 +92,12 @@ class _MyHomePageState extends State<MyHomePage> {
               callback: (val) {
                 setState(() {
                   jsonOutput = val;
-                  if (val["move"] != "")
+                  if (val["move"] == "CLR")
+                  {
+                    moves = [];
+
+                  }
+                  else if (val["move"] != "")
                   {
                     moves.add(val["move"]);
                   }

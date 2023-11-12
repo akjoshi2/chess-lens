@@ -118,7 +118,15 @@ class CameraWidgetState extends State<CameraWidget> {
       Container(
         margin: EdgeInsets.fromLTRB(midway, 335, 0, 10),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+              var responsebody = {
+              "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+              "evaluation": "-1.5",
+              "move" : "CLR",
+              "line": {"0": "a5", "1": "b5", "2": "c5"},
+            };
+            widget.callback(responsebody);
+          },
           style: ElevatedButton.styleFrom(
               shape: CircleBorder(side: BorderSide(color: Colors.black)),
               minimumSize: Size(70, 70),
