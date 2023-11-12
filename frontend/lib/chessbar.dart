@@ -13,9 +13,12 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double topAdv = 0.00;
+    double topAdv = 0.0;
     String topAdvString = "+${topAdv.toString()}";
-    double botAdv = -1 * topAdv;
+    double botAdv = topAdv;
+    if (topAdv != 0) {
+      botAdv = -1 * topAdv;
+    }
     String botAdvString = "+${botAdv.toString()}";
     double whitePercent = 50.00;
     if (topAdv < -3) {
@@ -71,6 +74,7 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
+            SizedBox(height: 3),
             if (topAdv > botAdv)
               Text(
                 topAdvString,
