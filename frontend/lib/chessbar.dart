@@ -15,6 +15,8 @@ class ChessbarState extends State<ChessbarWidget> {
         : [Colors.black, Colors.black, Colors.white, Colors.white];
     double whiteAdv = 0.0;
     String whiteAdvString = "+${whiteAdv.toString()}";
+    double botAdv = 0.0;
+    String botAdvString = "+${botAdv.toString()}";
     double whitePercent = 50.00;
     double whiteStop = (100 - whitePercent) / 100;
     final List<double> stops = [0.0, whiteStop, whiteStop, 1.0];
@@ -35,11 +37,21 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
-            Text(whiteAdvString,
-                style: TextStyle(
-                  fontSize: 7,
-                  color: widget.flipped ? Colors.black : Colors.white,
-                ))
+            Text(
+              whiteAdvString,
+              style: TextStyle(
+                fontSize: 7,
+                color: widget.flipped ? Colors.black : Colors.white,
+              ),
+            ),
+            SizedBox(height: 265),
+            Text(
+              botAdvString,
+              style: TextStyle(
+                fontSize: 7,
+                color: widget.flipped ? Colors.white : Colors.black,
+              ),
+            ),
           ]),
         ),
       ),
