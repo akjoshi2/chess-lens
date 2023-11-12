@@ -8,30 +8,8 @@ class MovesWidget extends StatefulWidget {
 }
 
 class MovesState extends State<MovesWidget> {
-  List<String> whiteMoves = [
-    "e4",
-    "Nf3",
-    "Bb5",
-    "d3",
-    "Ba4",
-    "O-O",
-    "Re8",
-    "Bf8",
-    "Nbd2",
-  ];
-
-  List<String> blackMoves = [
-    "e5",
-    "Nc6",
-    "Nf6",
-    "Bc5",
-    "O-O",
-    "c3",
-    "h6",
-    "d6",
-    "Re1",
-  ];
-
+  List<String> whiteMoves = [];
+  List<String> blackMoves = [];
   @override
   Widget build(BuildContext context) {
     whiteMoves = [];
