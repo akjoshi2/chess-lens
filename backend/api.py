@@ -38,6 +38,8 @@ def getFen():
         print(prevFen)
         checkToMove = prevFen.split(" ")[1]
         newFen = getBoardFen(imagePath, prevFen)
+        print("Has Prev")
+        print(newFen)
         if(checkToMove):
             if checkToMove == "w":
                 newFen += " b"
@@ -48,22 +50,28 @@ def getFen():
             newFen = prevFen
             res.update(getEval(newFen))
             res.update({"move": ""})
+            res.update({"fen":newFen})
+            print(res)
             return res
 
         newFen = apply_uci_move_to_fen(newFen, move)
         db.insert_db(newFen, res["uuid"])
         alg_move = uci_to_algebraic(newFen, move)
         res.update(getEval(newFen))
+        res.update({"fen":newFen})
         res.update({"move": alg_move})
+        
     else: 
         newFen = getBoardFen(imagePath, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
         # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
-        newFen += " " + toPlay
+        newFen += " " + toPlay + " KQkq - 0 1"
+        print("First Move")
+        print(newFen)
         db.insert_db(newFen, res["uuid"])
         res.update(getEval(newFen))
         res.update({"move": ""})
-    
-
+        res.update({"fen":newFen})
+    print(res)
     return res
 
 
@@ -72,7 +80,7 @@ def getMoves(line, board):
     for move in line["pv"]:
         arr.append(board.san(move))
         board.push(move)
-    for i in range(line["pv"]):
+    for i in range(len(line["pv"])):
         board.pop()
     return arr
 
@@ -88,17 +96,17 @@ def getEval(fen):
     lines = {}
     eval = ""
     for i in range(len(info)):
-        arr = getMoves(info[i])
-        lines[i+1] = {"evaluation": info[i]["score"].relative.score(mate_score=10000), "lines": " ".join(arr)}
+        arr = getMoves(info[i], board)
+        lines[i+1] = {"evaluation": str(info[i]["score"].relative.score(mate_score=10000)), "lines": " ".join(arr)}
         if i == 0:
             eval = info[i]["score"].relative.score(mate_score=10000)
 
 
 
-    response = {"finalEval": lines[1]["evaluation"], "lines": lines}
+    response = {"evaluation": lines[1]["evaluation"], "lines": lines}
     
     # Return the response as JSON
-    return jsonify(response)
+    return response
 
 
 def is_one_move_away(fen1, fen2):

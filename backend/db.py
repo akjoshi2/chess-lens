@@ -20,11 +20,11 @@ def create_db():
 def insert_db(fen, uuid):
     db = sqlite3.connect("chess_db")
     curr = db.cursor()
-    insert_table_query = '''
-        INSERT INTO active(uuid,fen,date) VALUES (?,?,?)
+    insert_table_query = f'''
+        INSERT INTO active(uuid,fen,date) VALUES (\'{uuid}\',\'{fen}\',\'{datetime.now()}\')
     '''
 
-    curr.execute(insert_table_query, (uuid, fen, datetime.now()))
+    curr.execute(insert_table_query)
 
     db.commit()
     curr.close()

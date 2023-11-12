@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -45,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> moves = [];
   Map<String, dynamic> jsonOutput = {
     "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    "evaluation": 0.0.toString(),
+    "evaluation": (10).toString(),
     "move" : "KC6",
     "line" : {"0": "a5", "1": "b5", "2": "c5"},
   };
@@ -63,6 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    PageController pgcont = PageController();
+
     print(jsonOutput["line"].toString());
     List<String> getStockLines() {
       List<String> stockLines = [];
@@ -77,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-        body: GridView.count(
+
+        body:  PageView( controller: pgcont, children: [GridView.count(
             crossAxisCount:
                 MediaQuery.of(context).orientation == Orientation.portrait
                     ? 1
@@ -213,6 +217,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ])
               ])
+        ]),
+        
+          Scaffold(appBar: AppBar(
+  title: Text('En Passant Coin'),
+),
+          
+                body: Text("hi")
+          )        
+        
         ]));
   }
 }

@@ -45,7 +45,7 @@ class CameraWidgetState extends State<CameraWidget> {
       // Start ImageStream
       await controller.startImageStream((CameraImage image) async {
         if (timer) {
-          Future.delayed(const Duration(seconds: 5), () {
+          Future.delayed(const Duration(seconds: 20), () {
             timer = true;
           });
 
@@ -66,14 +66,14 @@ class CameraWidgetState extends State<CameraWidget> {
 
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
-          // var response = await http.post(uri, body: queryParams);
-          var responsebody = {
+          var response = await http.post(uri, body: queryParams);
+          /*var responsebody = {
             "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
             "evaluation": "-1.5",
             "move" : "KC6",
             "line": {"0": "a5", "1": "b5", "2": "c5"},
-          };
-          widget.callback(responsebody);
+          };*/
+          widget.callback(jsonDecode(response.body));
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
         }
