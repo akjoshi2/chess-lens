@@ -12,7 +12,7 @@ from lc2fen.predict_board import predict_board_keras
 
 
 ACTIVATE_KERAS = True
-MODEL_PATH_KERAS = "cpmodels/models/MobileNetV2_0p5_last.h5"
+MODEL_PATH_KERAS = "cpmodels/oldModels/MobileNetV2_0p5_last.h5"
 IMG_SIZE_KERAS = 224
 PRE_INPUT_KERAS = prein_mobilenet
 
@@ -45,20 +45,6 @@ def parse_arguments() -> tuple[str, str, str | None]:
         help="FEN string of the previous board position (if "
         "you are predicting the FEN for a single image and if "
         "the previous board position is known)",
-    )
-
-    inf_engine = parser.add_mutually_exclusive_group(required=True)
-    inf_engine.add_argument(
-        "-k", "--keras", help="run inference using Keras", action="store_true"
-    )
-    inf_engine.add_argument(
-        "-o",
-        "--onnx",
-        help="run inference using ONNXRuntime",
-        action="store_true",
-    )
-    inf_engine.add_argument(
-        "-t", "--trt", help="run inference using TensorRT", action="store_true"
     )
 
     args = parser.parse_args()
