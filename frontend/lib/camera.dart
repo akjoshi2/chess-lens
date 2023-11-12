@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 @override
 class CameraWidget extends StatefulWidget {
+  final Orientation? orientation;
   @override
   State<StatefulWidget> createState() => CameraWidgetState();
-  const CameraWidget({super.key});
+  const CameraWidget({required Key key, required this.orientation});
 }
 
 class CameraWidgetState extends State<CameraWidget> {
   late CameraController controller;
   List<CameraDescription>? cameras;
+  bool timer = true;
   var _cameraInitialized = false;
   void _initCamera() async {
     cameras = await availableCameras();
     controller = CameraController(cameras![0], ResolutionPreset.max);
     controller.initialize().then((_) async {
       // Start ImageStream
-      await controller.startImageStream((CameraImage image) => ());
+      await controller.startImageStream((CameraImage image) {
+        if (timer) {
+          // Future.delayed(const Duration(seconds: 5)).then() getPictures
+        }
+      });
       setState(() {
         _cameraInitialized = true;
       });
@@ -38,14 +45,39 @@ class CameraWidgetState extends State<CameraWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-        child: FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: .5,
-            child: (_cameraInitialized)
-                ? AspectRatio(
-                    aspectRatio: controller.value.aspectRatio,
-                    child: CameraPreview(controller))
-                : const CircularProgressIndicator()));
+    double midway = MediaQuery.of(context).orientation == Orientation.portrait
+        ? (MediaQuery.of(context).size.width * 0.5) - 35
+        : (MediaQuery.of(context).size.height * 0.5) - 35;
+
+    return Stack(children: <Widget>[
+      FractionallySizedBox(
+          widthFactor: widget.orientation == Orientation.portrait ? 1 : 1,
+          heightFactor: widget.orientation == Orientation.portrait ? 1 : 1,
+          child: (_cameraInitialized)
+              ? AspectRatio(
+                  aspectRatio: controller.value.aspectRatio,
+                  child: CameraPreview(controller))
+              : LoadingAnimationWidget.stretchedDots(
+                  color: Colors.white,
+                  size: 200,
+                )),
+      Container(
+        margin: EdgeInsets.fromLTRB(midway, 335, 0, 10),
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+              shape: CircleBorder(side: BorderSide(color: Colors.black)),
+              minimumSize: Size(70, 70),
+              backgroundColor: Colors.white, // Set the background color here
+              elevation: 8.0,
+              shadowColor: Colors.black),
+          child: Icon(
+            Icons.refresh,
+            size: 45.0,
+            color: Colors.green,
+          ),
+        ),
+      ),
+    ]);
   }
 }

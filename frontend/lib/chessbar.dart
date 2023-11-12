@@ -13,16 +13,18 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double whiteAdv = 0.0;
-    String whiteAdvString = "+${whiteAdv.toString()}";
+    double topAdv = 0.0;
+    String topAdvString = "+${topAdv.toString()}";
+    double botAdv = -1 * topAdv;
+    String botAdvString = "+${botAdv.toString()}";
     double whitePercent = 50.00;
     double whiteStop = (100 - whitePercent) / 100;
     final List<double> stops = [0.0, whiteStop, whiteStop, 1.0];
 
     return Flexible(
       child: FractionallySizedBox(
-        widthFactor: .05,
-        heightFactor: .5,
+        widthFactor: 1,
+        heightFactor: 1,
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -35,11 +37,23 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
-            Text(whiteAdvString,
+            if (topAdv >= botAdv)
+              Text(
+                topAdvString,
                 style: TextStyle(
                   fontSize: 7,
                   color: widget.flipped ? Colors.black : Colors.white,
-                ))
+                ),
+              ),
+            SizedBox(height: 265),
+            if (botAdv > topAdv)
+              Text(
+                botAdvString,
+                style: TextStyle(
+                  fontSize: 7,
+                  color: widget.flipped ? Colors.white : Colors.black,
+                ),
+              ),
           ]),
         ),
       ),
