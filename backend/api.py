@@ -61,7 +61,7 @@ def getFen():
         return res
     
     except ValueError:
-        return 
+        return {}
 
     
     
