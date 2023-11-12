@@ -74,6 +74,8 @@ class CameraWidgetState extends State<CameraWidget> {
             "line": {"0": "a5", "1": "b5", "2": "c5"},
           };*/
           widget.callback(jsonDecode(response.body));
+          
+          http.post(Uri.http("https://hedera.onrender.com", "/increment"))
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
         }
