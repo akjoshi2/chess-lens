@@ -42,8 +42,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _controller = ValueNotifier<bool>(true);
+  List<String> moves = [];
   Map<String, dynamic> jsonOutput = {
-    "fen": 'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1'
+    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    "evaluation": 0.0.toString(),
+    "move" : "KC6"
   };
 
   bool whiteToPlay = true;
@@ -81,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               callback: (val) {
                 setState(() {
                   jsonOutput = val;
+                  moves.add(val["move"]);
                   print(jsonOutput);
                 });
                 print(jsonOutput);
@@ -131,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           width: 25,
                           height: 288,
-                          child: ChessbarWidget(flipped: !_controller.value)),
+                          child: ChessbarWidget(flipped: !_controller.value, eval: double.parse(jsonOutput["evaluation"]))),
                       const SizedBox(width: 10),
                       Column(children: [
                         Container(
@@ -172,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ],
                             ),
-                            child: MovesWidget())
+                            child: MovesWidget(moves: moves))
                       ])
                     ]),
                 SizedBox(height: 10),

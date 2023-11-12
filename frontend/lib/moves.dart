@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MovesWidget extends StatefulWidget {
-  const MovesWidget({Key? key}) : super(key: key);
+  final List<String> moves;
+  const MovesWidget({Key? key, required List<String> this.moves}) : super(key: key);
   @override
   MovesState createState() => MovesState();
 }
@@ -33,6 +34,16 @@ class MovesState extends State<MovesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    whiteMoves = [];
+    blackMoves = [];
+    for(int i = 0; i < widget.moves.length; i++){
+      if(i % 2 == 0){
+          whiteMoves.add(widget.moves[i]);
+      }
+      else{
+        blackMoves.add(widget.moves[i]);
+      }
+    }
     return Container(
       height: 244,
       width: 78,
@@ -55,7 +66,7 @@ class MovesState extends State<MovesWidget> {
               itemCount: whiteMoves.length,
               itemBuilder: (context, index) {
                 return Text(
-                  "${index + 1}. ${whiteMoves[index]}  ${blackMoves[index]}",
+                  blackMoves.length < whiteMoves.length && index == whiteMoves.length-1? "${index + 1}. ${whiteMoves[index]}" : "${index + 1}. ${whiteMoves[index]}  ${blackMoves[index]}" ,
                   style: TextStyle(
                     fontSize: 9,
                   ),

@@ -23,7 +23,7 @@ class CameraWidgetState extends State<CameraWidget> {
 
   bool timer = true;
   var _cameraInitialized = false;
-
+  var uuid = "";
   Uint8List convertImgToBytes(CameraImage img) {
     int totBytes = 0;
     for (Plane plane in img.planes) {
@@ -51,18 +51,26 @@ class CameraWidgetState extends State<CameraWidget> {
 
           Uint8List myBytes = convertImgToBytes(image);
           var b64 = base64Encode(myBytes);
-          final queryParams = {
+          final queryParams = uuid == "" ? {
             "width": image.width.toString(),
             "height": image.height.toString(),
             "image": b64,
-            "whiteToMove": 0,
-          };
+            "whiteToMove": 0.toString(),
+          } : {
+            "width": image.width.toString(),
+            "height": image.height.toString(),
+            "image": b64,
+            "whiteToMove": 0.toString(),
+            "uuid" : uuid
+          } ;
 
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
-          //var response = await http.post(uri, body: queryParams);
+          // var response = await http.post(uri, body: queryParams);
           var responsebody = {
-            "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+            "evaluation": "-1.5",
+            "move" : "KC6"
           };
           widget.callback(responsebody);
           // String base64Image = base64Encode(imageBytes);
