@@ -8,6 +8,7 @@ import uuid
 import db
 import chess
 import chess.engine
+import imageio
 
 
 stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
@@ -18,16 +19,10 @@ app = Flask(__name__)
 def getFen():
     res = {}
     img = request.args["image"]
-
-    image_bytes = base64.b64decode(img)
-
-    # Create a BytesIO object from the decoded bytes
-    image_buffer = BytesIO(image_bytes)
-
-    # Open the image using Pillow (PIL)
-    imageFinal = Image.open(image_buffer)
-
-    res["image"] = imageFinal
+    width = request.args["width"]
+    height = request.args["height"]
+    
+    res["image"] = yuv420_to_pillow(img, width, height)
 
     res["toPlay"] = request.args.get("toPlay")
 
@@ -150,6 +145,17 @@ def apply_uci_move_to_fen(fen, uci_move):
 
     return updated_fen
 
+def yuv420_to_pillow(yuv_file, width, height):
+    # Read YUV420 image
+    yuv_image = imageio.imread(yuv_file)
+
+    # Convert YUV420 to RGB
+    rgb_image = imageio.core.util.yuv420p_to_rgb(yuv_image, width, height)
+
+    # Create Pillow Image object from RGB array
+    pillow_image = Image.fromarray(rgb_image)
+
+    return pillow_image
 
 # import urllib
 # f = urllib.parse.quote_plus("fen=rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2")
