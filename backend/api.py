@@ -87,14 +87,16 @@ def getEval(fen):
     info = engine.analyse(board, chess.engine.Limit(time=2),multipv=3)
     
     lines = {}
-
+    eval = ""
     for i in range(len(info)):
         arr = getMoves(info[i])
         lines[i] = " ".join(arr)
+        if i == 0:
+            eval = info[i]["score"].relative.score(mate_score=10000)
 
 
 
-    response = {"evaluation": adjustedEval, "lines": lines}
+    response = {"evaluation": eval, "lines": lines}
     
     # Return the response as JSON
     return jsonify(response)
