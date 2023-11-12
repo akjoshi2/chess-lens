@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:frontend/chessbar.dart';
+import 'package:frontend/moves.dart';
 import 'camera.dart';
 import 'package:flutter/services.dart';
 import 'chessboard.dart';
@@ -36,7 +37,9 @@ class MyApp extends StatelessWidget {
           //
           // This works for code too, not just values: Most code changes can be
           // tested with just a hot reload.
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.white,
+              background: Color.fromRGBO(211, 211, 211, 1.0)),
           useMaterial3: true,
         ),
         home: const MyHomePage(title: 'Flutter Demo Home Page'));
@@ -99,10 +102,16 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? SizedBox(height: 10)
+                    : SizedBox(),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? SizedBox()
+                          : SizedBox(width: 10),
                       SizedBox(
                           width: MediaQuery.of(context).orientation ==
                                   Orientation.portrait
@@ -110,26 +119,31 @@ class _MyHomePageState extends State<MyHomePage> {
                               : MediaQuery.of(context).size.height * .7,
                           height: 288,
                           child: ChessboardWidget(flipped: !_controller.value)),
+                      SizedBox(width: 10),
                       SizedBox(
                           width: 25,
                           height: 288,
                           child: ChessbarWidget(flipped: !_controller.value)),
-                      SizedBox(
-                          width: 98,
-                          height: 35,
-                          child: AdvancedSwitch(
-                            controller: _controller,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(2)),
-                            width: 80,
-                            height: 20,
-                            activeColor: Colors.white,
-                            inactiveColor: Colors.black,
-                            activeChild: const Text('WHITE',
-                                style: TextStyle(color: Colors.black)),
-                            inactiveChild: const Text('BLACK',
-                                style: TextStyle(color: Colors.white)),
-                          ))
+                      SizedBox(width: 10),
+                      Column(children: [
+                        SizedBox(
+                            width: 78,
+                            height: 35,
+                            child: AdvancedSwitch(
+                              controller: _controller,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(2)),
+                              width: 68,
+                              height: 20,
+                              activeColor: Colors.white,
+                              inactiveColor: Colors.black,
+                              activeChild: const Text('WHITE',
+                                  style: TextStyle(color: Colors.black)),
+                              inactiveChild: const Text('BLACK',
+                                  style: TextStyle(color: Colors.white)),
+                            )),
+                        MovesWidget()
+                      ])
                     ])
               ])
         ]));
