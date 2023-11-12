@@ -13,7 +13,7 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double topAdv = 1.50;
+    double topAdv = -1.50;
     String topAdvString = "+${topAdv.toString()}";
     double botAdv = -1 * topAdv;
     String botAdvString = "+${botAdv.toString()}";
@@ -40,6 +40,14 @@ class ChessbarState extends State<ChessbarWidget> {
       whitePercent = 89.00;
     } else {
       whitePercent = 99.00;
+    }
+    if (!widget.flipped) {
+      double temp = topAdv;
+      String tempString = topAdvString;
+      topAdv = botAdv;
+      topAdvString = botAdvString;
+      botAdv = temp;
+      botAdvString = tempString;
     }
     double whiteStop = (100 - whitePercent) / 100;
     double blackStop = whitePercent / 100;
