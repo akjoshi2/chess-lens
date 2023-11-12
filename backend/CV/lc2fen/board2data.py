@@ -130,6 +130,6 @@ def process_input_boards(data_path: str):
         image_object = detect_board.detect(input_image, output_board)
         _, square_corners = detect_board.compute_corners(image_object)
         name = os.path.splitext(os.path.basename(input_board))[0]
-        split_board_image_advanced(
-            input_image, square_corners, name, data_path + "/pieces")
+        # split_board_image_advanced(
+        #     input_image, square_corners, name, data_path + "/pieces")
             
