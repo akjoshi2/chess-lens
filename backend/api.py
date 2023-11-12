@@ -56,7 +56,7 @@ def getFen():
         res.update(getEval(newFen))
         res.update({"move": alg_move})
     else: 
-        newFen = getBoardFen(imagePath, None)
+        newFen = getBoardFen(imagePath, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
         # this occurs when toPlay is specified, aka on first render. We need to insert db the new uuid, along with the updated fen
         newFen += " " + toPlay
         db.insert_db(newFen, res["uuid"])

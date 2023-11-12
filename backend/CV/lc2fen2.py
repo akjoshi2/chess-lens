@@ -70,7 +70,7 @@ if __name__ == "__main__":
     main()
 
 def getBoardFen(image, previous_fen):
-    a1_pos = "BR"
+    a1_pos = "BL"
     fen, _ = predict_board_keras(
         MODEL_PATH_KERAS,
         IMG_SIZE_KERAS,
