@@ -71,7 +71,7 @@ class ChessbarState extends State<ChessbarWidget> {
             borderRadius: const BorderRadius.all(Radius.circular(2)),
           ),
           child: Column(children: [
-            if (topAdv >= botAdv)
+            if (topAdv > botAdv)
               Text(
                 topAdvString,
                 style: TextStyle(
@@ -79,8 +79,8 @@ class ChessbarState extends State<ChessbarWidget> {
                   color: widget.flipped ? Colors.black : Colors.white,
                 ),
               ),
-            SizedBox(height: 265),
-            if (botAdv > topAdv)
+            SizedBox(height: 274),
+            if (botAdv >= topAdv)
               Text(
                 botAdvString,
                 style: TextStyle(
