@@ -14,7 +14,7 @@ from lc2fen.detectboard import poly_point_isect
 
 
 __LAPS_SESS = onnxruntime.InferenceSession(
-    "lc2fen/detectboard/models/laps_model.onnx"
+    "./CV/lc2fen/detectboard/models/laps_model.onnx"
 )
 
 __ANALYSIS_RADIUS = 10

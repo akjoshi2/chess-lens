@@ -9,21 +9,9 @@ import time
 
 import cv2
 import numpy as np
-# import onnxruntime
 from keras.models import load_model
 from keras.utils import load_img, img_to_array
 import chess
-
-try:
-    import pycuda.driver as cuda
-
-    # `pycuda.autoinit` enables pycuda to automatically manage CUDA
-    # context creation and cleanup.
-    import pycuda.autoinit
-    import tensorrt as trt
-except ImportError:
-    cuda = None
-    trt = None
 
 from lc2fen.detectboard.detect_board import detect, compute_corners
 from lc2fen.fen import (
@@ -38,7 +26,7 @@ from lc2fen.infer_pieces import infer_chess_pieces
 from lc2fen.split_board import split_board_image_trivial
 
 
-def load_image(img_path: str, img_size: int, preprocess_func) -> np.ndarray:
+def load_image(image, img_size: int, preprocess_func) -> np.ndarray:
     """Load an image.
 
     This function loads an image from its path. It is intended to be
@@ -52,10 +40,14 @@ def load_image(img_path: str, img_size: int, preprocess_func) -> np.ndarray:
 
     :return: Preprocessed image.
     """
-    img = load_img(img_path, target_size=(img_size, img_size))
-    img_tensor = img_to_array(img)
-    img_tensor = np.expand_dims(img_tensor, axis=0)
-    return preprocess_func(img_tensor)
+    if(isinstance(image, str)):
+        img = load_img(image, target_size=(img_size, img_size))
+        img_tensor = img_to_array(img)
+        img_tensor = np.expand_dims(img_tensor, axis=0)
+        return preprocess_func(img_tensor)
+    else:
+        img_tensor = np.expand_dims(image, axis=0)
+        return preprocess_func(img_tensor)
 
 
 def predict_board_keras(
@@ -65,50 +57,8 @@ def predict_board_keras(
     path="",
     a1_pos="",
     test=False,
-    previous_fen: (str | None) = None,
-) -> tuple[str, list[list[int]]] | None:
-    """Predict FEN(s) from board image(s) using Keras for inference.
-
-    This function predicts FEN string(s) from chessboard image(s) using
-    Keras as the inference engine.
-
-    :param model_path: Path to the Keras model (ending with ".h5").
-
-    :param img_size: Input size for the model.
-
-    :param pre_input: Input-preprocessing function for the model.
-
-    :param path: Path to the chessboard image or folder.
-
-        This is the path to either a single chessboard image or a folder
-        that contains chessboard images.
-
-        The path must have rw permission.
-
-        Example: `"../predictions/board.jpg"` or `"../predictions/"`.
-
-    :param a1_pos: Position of the a1 square of the chessboard images.
-
-        This is the position of the a1 square (`"BL"`, `"BR"`, `"TL"`,
-        or `"TR"`) corresponding to the chessboard image(s).
-
-    :param test: Whether to activate testing mode.
-
-        If `test` is `True`, `path` is not used.
-
-    :param previous_fen: FEN string of the previous board position.
-
-        This parameter is only used when `path` points to a single image
-        and `test` is `False`.
-
-    :return: A pair formed by the predicted FEN string, the coordinates
-    of the corners of the chessboard in the input image for single-FEN
-    prediction.
-
-        If `test` is `True`, the function returns `None`.
-
-        If `path` points to a folder, the function does not return.
-    """
+    previous_fen  = None,
+) -> tuple[str, list[list[int]]]:
     model = load_model(model_path)
 
     def obtain_piece_probs_for_all_64_squares(
@@ -135,243 +85,12 @@ def predict_board_keras(
                 previous_fen=previous_fen,
             )
 
-
-def predict_board_onnx(
-    model_path: str,
-    img_size: int,
-    pre_input,
-    path="",
-    a1_pos="",
-    test=False,
-    previous_fen: (str | None) = None,
-) -> tuple[str, list[list[int]]] | None:
-    """Predict FEN(s) from board image(s) using ONNX for inference.
-
-    This function predicts FEN string(s) from chessboard image(s) using
-    ONNXRuntime as the inference engine.
-
-    :param model_path: Path to the ONNX model (ending with ".onnx").
-
-    :param img_size: Input size for the model.
-
-    :param pre_input: Input-preprocessing function for the model.
-
-    :param path: Path to the chessboard image or folder.
-
-        This is the path to either a single chessboard image or a folder
-        that contains chessboard images.
-
-        The path must have rw permission.
-
-        Example: `"../predictions/board.jpg"` or `"../predictions/"`.
-
-    :param a1_pos: Position of the a1 square of the chessboard images.
-
-        This is the position of the a1 square (`"BL"`, `"BR"`, `"TL"`,
-        or `"TR"`) corresponding to the chessboard image(s).
-
-    :param test: Whether to activate testing mode.
-
-        If `test` is `True`, `path` is not used.
-
-    :param previous_fen: FEN string of the previous board position.
-
-        This parameter is only used when `path` points to a single image
-        and `test` is `False`.
-
-    :return: A pair formed by the predicted FEN string, the coordinates
-    of the corners of the chessboard in the input image for single-FEN
-    prediction.
-
-        If `test` is `True`, the function returns `None`.
-
-        If `path` points to a folder, the function does not return.
-    """
-    sess = onnxruntime.InferenceSession(model_path)
-
-    def obtain_piece_probs_for_all_64_squares(
-        pieces: list[str],
-    ) -> list[list[float]]:
-        predictions = []
-        for piece in pieces:
-            piece_img = load_image(piece, img_size, pre_input)
-            predictions.append(
-                sess.run(None, {sess.get_inputs()[0].name: piece_img})[0][0]
-            )
-        return predictions
-
-    if test:
-        test_predict_board(obtain_piece_probs_for_all_64_squares)
-    else:
-        if os.path.isdir(path):
-            return continuous_predictions(
-                path, a1_pos, obtain_piece_probs_for_all_64_squares
-            )
-        else:
-            return predict_board(
-                path,
-                a1_pos,
-                obtain_piece_probs_for_all_64_squares,
-                previous_fen=previous_fen,
-            )
-
-
-def predict_board_trt(
-    model_path: str,
-    img_size: int,
-    pre_input,
-    path="",
-    a1_pos="",
-    test=False,
-    previous_fen: (str | None) = None,
-) -> tuple[str, list[list[int]]] | None:
-    """Predict FEN(s) from board image(s) using TensorRT for inference.
-
-    This function predicts FEN string(s) from chessboard image(s) using
-    TensorRT as the inference engine.
-
-    :param model_path: Path to the TensorRT engine with batch size 64.
-
-        The path must end with the ".trt" extension.
-
-    :param img_size: Input size for the model.
-
-    :param pre_input: Input-preprocessing function for the model.
-
-    :param path: Path to the chessboard image or folder.
-
-        This is the path to either a single chessboard image or a folder
-        that contains chessboard images.
-
-        The path must have rw permission.
-
-        Example: `"../predictions/board.jpg"` or `"../predictions/"`.
-
-    :param a1_pos: Position of the a1 square of the chessboard images.
-
-        This is the position of the a1 square (`"BL"`, `"BR"`, `"TL"`,
-        or `"TR"`) corresponding to the chessboard image(s).
-
-    :param test: Whether to activate testing mode.
-
-        If `test` is `True`, `path` is not used.
-
-    :param previous_fen: FEN string of the previous board position.
-
-        This parameter is only used when `path` points to a single image
-        and `test` is `False`.
-
-    :return: A pair formed by the predicted FEN string, the coordinates
-    of the corners of the chessboard in the input image for single-FEN
-    prediction.
-
-        If `test` is `True`, the function returns `None`.
-
-        If `path` points to a folder, the function does not return.
-    """
-    if cuda is None or trt is None:
-        raise ImportError("Unable to import pycuda or tensorrt")
-
-    class __HostDeviceTuple:
-        """A tuple of host and device. It helps clarify code."""
-
-        def __init__(self, _host, _device):
-            self.host = _host
-            self.device = _device
-
-    def __allocate_buffers(engine):
-        """Allocate all buffers required for the specified engine."""
-        inputs = []
-        outputs = []
-        bindings = []
-
-        for binding in engine:
-            # Get binding (tensor/buffer) size
-            size = trt.volume(engine.get_binding_shape(binding))
-            # Get binding (tensor/buffer) data type (numpy-equivalent)
-            dtype = trt.nptype(engine.get_binding_dtype(binding))
-            # Allocate page-locked memory (i.e., pinned memory) buffers
-            host_mem = cuda.pagelocked_empty(size, dtype)
-            # Allocate linear piece of device memory
-            device_mem = cuda.mem_alloc(host_mem.nbytes)
-
-            bindings.append(int(device_mem))
-
-            if engine.binding_is_input(binding):
-                inputs.append(__HostDeviceTuple(host_mem, device_mem))
-            else:
-                outputs.append(__HostDeviceTuple(host_mem, device_mem))
-
-        stream = cuda.Stream()
-        return inputs, outputs, bindings, stream
-
-    def __infer(context, bindings, inputs, outputs, stream):
-        """Infer outputs on IExecutionContext for specified inputs."""
-        # Transfer input data to the GPU
-        for inp in inputs:
-            cuda.memcpy_htod_async(inp.device, inp.host, stream)
-        # Run inference
-        context.execute_async_v2(
-            bindings=bindings, stream_handle=stream.handle
-        )
-        # Transfer predictions back from the GPU
-        for out in outputs:
-            cuda.memcpy_dtoh_async(out.host, out.device, stream)
-
-        stream.synchronize()
-
-        return [out.host for out in outputs]
-
-    trt_logger = trt.Logger(trt.Logger.VERBOSE)
-    # Read and deserialize the serialized ICudaEngine
-    with open(model_path, "rb") as f, trt.Runtime(trt_logger) as runtime:
-        engine = runtime.deserialize_cuda_engine(f.read())
-
-    inputs, outputs, bindings, stream = __allocate_buffers(engine)
-
-    # Assuming batch size == 64
-    img_array = np.zeros((64, trt.volume((img_size, img_size, 3))))
-
-    # Create an IExecutionContext (context for executing inference)
-    with engine.create_execution_context() as context:
-
-        def obtain_piece_probs_for_all_64_squares(
-            pieces: list[str],
-        ) -> list[list[float]]:
-            # Assuming batch size == 64
-            for i, piece in enumerate(pieces):
-                img_array[i] = load_image(piece, img_size, pre_input).ravel()
-            np.copyto(inputs[0].host, img_array.ravel())
-            trt_outputs = __infer(context, bindings, inputs, outputs, stream)[
-                -1
-            ]
-
-            return [
-                trt_outputs[ind : ind + 13] for ind in range(0, 13 * 64, 13)
-            ]
-
-        if test:
-            test_predict_board(obtain_piece_probs_for_all_64_squares)
-        else:
-            if os.path.isdir(path):
-                return continuous_predictions(
-                    path, a1_pos, obtain_piece_probs_for_all_64_squares
-                )
-            else:
-                return predict_board(
-                    path,
-                    a1_pos,
-                    obtain_piece_probs_for_all_64_squares,
-                    previous_fen=previous_fen,
-                )
-
-
 def predict_board(
     board_path: str,
     a1_pos: str,
     obtain_piece_probs_for_all_64_squares,
-    board_corners: (list[list[int]] | None) = None,
-    previous_fen: (str | None) = None,
+    board_corners: (list[list[int]]) = None,
+    previous_fen: (str) = None,
 ) -> tuple[str, list[list[int]]]:
     """Predict the FEN string from a chessboard image.
 
@@ -534,7 +253,7 @@ def test_predict_board(obtain_piece_probs_for_all_64_squares):
 
 
 def detect_input_board(
-    board_path: str, board_corners: (list[list[int]] | None) = None
+    board_path: str, board_corners: (list[list[int]]) = None
 ) -> list[list[int]]:
     """Detect the input board.
 
@@ -566,7 +285,7 @@ def detect_input_board(
     """
     input_image = cv2.imread(board_path)
     head, tail = os.path.split(board_path)
-    tmp_dir = os.path.join(head, "tmp/")
+    tmp_dir = os.path.join(head, "tmp","")
     if os.path.exists(tmp_dir):
         shutil.rmtree(tmp_dir)
     os.mkdir(tmp_dir)
@@ -592,11 +311,11 @@ def obtain_individual_pieces(board_path: str) -> list[str]:
     :return: Length-64 list of paths to chess-piece images
     """
     head, tail = os.path.split(board_path)
-    tmp_dir = os.path.join(head, "tmp/")
-    pieces_dir = os.path.join(tmp_dir, "pieces/")
+    tmp_dir = os.path.join(head, "tmp","")
+    pieces_dir = os.path.join(tmp_dir, "pieces","")
     os.mkdir(pieces_dir)
     split_board_image_trivial(os.path.join(tmp_dir, tail), "", pieces_dir)
-    return sorted(glob.glob(pieces_dir + "/*.jpg"))
+    return sorted(glob.glob(pieces_dir + os.sep + "*.jpg"))
 
 
 def time_predict_board(
@@ -709,7 +428,7 @@ def print_fen_comparison(
 
 def read_correct_fen(
     fen_file: str,
-) -> tuple[list[str], list[str], list[str | None]]:
+) -> tuple[list[str], list[str], list[str]]:
     """Read the correct FENs.
 
     :param fen_file: Path to the correct-FEN file.

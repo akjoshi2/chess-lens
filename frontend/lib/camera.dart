@@ -42,6 +42,8 @@ class CameraWidgetState extends State<CameraWidget> {
         if (timer) {
           Uint8List myBytes = convertImgToBytes(image);
           print(base64Encode(myBytes));
+          print(image.width);
+          print(image.height);
           // String base64Image = base64Encode(imageBytes);
           // printw(base64);
           // Future.delayed(const Duration(seconds: 5)).then() getPictures
