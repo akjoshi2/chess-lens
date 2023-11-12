@@ -13,7 +13,7 @@ class ChessbarState extends State<ChessbarWidget> {
     List<Color> grad = widget.flipped
         ? [Colors.white, Colors.white, Colors.black, Colors.black]
         : [Colors.black, Colors.black, Colors.white, Colors.white];
-    double topAdv = -1.50;
+    double topAdv = 0.00;
     String topAdvString = "+${topAdv.toString()}";
     double botAdv = -1 * topAdv;
     String botAdvString = "+${botAdv.toString()}";

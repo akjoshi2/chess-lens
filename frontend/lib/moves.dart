@@ -7,6 +7,7 @@ class MovesWidget extends StatefulWidget {
 }
 
 class MovesState extends State<MovesWidget> {
+  final List<String> moves = ["Kxd8", "e5", "c5"];
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -15,6 +16,10 @@ class MovesState extends State<MovesWidget> {
             padding: const EdgeInsets.all(10.0),
             width: 78,
             decoration: BoxDecoration(color: Colors.white),
-            child: Text("Move 1")));
+            child: ListView.builder(
+                itemCount: moves.length,
+                itemBuilder: (content, index) {
+                  return Text("$index. ${moves[index]}");
+                })));
   }
 }
