@@ -127,8 +127,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               ? MediaQuery.of(context).size.width * .7
                               : MediaQuery.of(context).size.height * .7,
                           height: 288,
-                          child: ChessboardWidget(flipped: !_controller.value)),
-                      SizedBox(width: 10),
+                          child: ChessboardWidget(
+                              flipped: !_controller.value,
+                              fen:
+                                  'r3r1k1/pp3nPp/1b1p1B2/1q1P1N2/8/P4Q2/1P3PK1/R6R w KQkq - 0 1')),
+                      const SizedBox(width: 10),
                       Container(
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -143,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 25,
                           height: 288,
                           child: ChessbarWidget(flipped: !_controller.value)),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Column(children: [
                         Container(
                             decoration: BoxDecoration(

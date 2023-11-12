@@ -42,18 +42,18 @@ class CameraWidgetState extends State<CameraWidget> {
       await controller.startImageStream((CameraImage image) async {
         if (timer) {
           Future.delayed(const Duration(seconds: 5), () {
-              timer= true;
+            timer = true;
           });
 
           Uint8List myBytes = convertImgToBytes(image);
           var b64 = base64Encode(myBytes);
           final queryParams = {
-              "width" : image.width.toString(),
-              "height" : image.height.toString(),
-              "frames" : image.planes.length.toString(),
-              "image" : b64
+            "width": image.width.toString(),
+            "height": image.height.toString(),
+            "frames": image.planes.length.toString(),
+            "image": b64
           };
-     
+
           timer = false;
           var uri = Uri.http("localhost:5000", "/getFen");
           await http.post(uri, body: queryParams);

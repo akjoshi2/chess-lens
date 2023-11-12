@@ -3,7 +3,9 @@ import 'package:flutter_chess_board/flutter_chess_board.dart';
 
 class ChessboardWidget extends StatefulWidget {
   final bool flipped;
-  const ChessboardWidget({Key? key, required this.flipped}) : super(key: key);
+  final String fen;
+  const ChessboardWidget({Key? key, required this.flipped, required this.fen})
+      : super(key: key);
   @override
   ChessboardState createState() => ChessboardState();
 }
@@ -33,7 +35,7 @@ class ChessboardState extends State<ChessboardWidget> {
   @override
   Widget build(BuildContext context) {
     // Initialize the ChessBoardController inside the build method
-    var flippedFen = widget.flipped ? flipBoard(inputFen) : (inputFen);
+    var flippedFen = widget.flipped ? flipBoard(widget.fen) : (widget.fen);
     controller = ChessBoardController.fromFEN(flippedFen);
 
     return IgnorePointer(
