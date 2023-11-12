@@ -9,9 +9,12 @@ import db
 import chess
 import chess.engine
 import imageio
-import base64
+import sys
+sys.path.append("/CV")
+from lc2fen import getBoardFen
 
-stockfish = Stockfish(path="stockfish.exe",depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
+
+stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
 
 app = Flask(__name__)
 
@@ -21,15 +24,13 @@ def getFen():
     img = request.args["image"]
     width = request.args["width"]
     height = request.args["height"]
-
+    
     checkImg = yuv420_to_pillow(img, width, height)
 
     toPlay = request.args.get("toPlay")
 
     res["uuid"] = request.args.get("uuid", uuid.uuid4())
 
-
-    fen = requests.get("fakeurl")
     try:
         fen = getBoardFen(checkImg)
 
