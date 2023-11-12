@@ -12,7 +12,7 @@ from lc2fen.predict_board import predict_board_keras
 
 
 ACTIVATE_KERAS = True
-MODEL_PATH_KERAS = "./CV/Models/Wood2.h5"
+MODEL_PATH_KERAS = "./CV/Models/Wood.h5"
 IMG_SIZE_KERAS = 224
 PRE_INPUT_KERAS = prein_mobilenet
 

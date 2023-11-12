@@ -84,7 +84,7 @@ class ChessbarState extends State<ChessbarWidget> {
                   color: widget.flipped ? Colors.black : Colors.white,
                 ),
               ),
-            SizedBox(height: 274),
+            SizedBox(height: 250),
             if (botAdv >= topAdv)
               Text(
                 botAdvString,
