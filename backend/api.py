@@ -9,6 +9,9 @@ import db
 import chess
 import chess.engine
 import imageio
+import sys
+sys.path.append("/CV")
+from lc2fen import getBoardFen
 
 
 stockfish = Stockfish(depth=20, parameters={"Ponder": "false", "MultiPV": 3, "Hash": 256})
@@ -28,7 +31,7 @@ def getFen():
 
     res["uuid"] = request.args.get("uuid", uuid.uuid4())
 
-    fen = requests.get("fakeurl")
+    fen = getBoardFen(res["image"])
 
     newFen = fen
     if(not res["toPlay"]):
