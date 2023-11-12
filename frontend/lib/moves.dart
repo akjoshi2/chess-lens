@@ -7,7 +7,7 @@ class MovesWidget extends StatefulWidget {
 }
 
 class MovesState extends State<MovesWidget> {
-  final List<String> moves = [
+  List<String> moves = [
     "e4",
     "e5",
     "Nf3",
